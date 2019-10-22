@@ -291,6 +291,7 @@ static int node_init(struct ngl_node *node)
         }
     }
 
+    LOG(ERROR, "lol");
     int ret = track_children(node);
     if (ret < 0)
         return ret;
@@ -394,13 +395,44 @@ static int node_set_ctx(struct ngl_node *node, struct ngl_ctx *ctx, struct ngl_c
 
 int ngli_node_attach_ctx(struct ngl_node *node, struct ngl_ctx *ctx)
 {
-    return node_set_ctx(node, ctx, ctx);
+    int ret = node_set_ctx(node, ctx, ctx);
+    if (ret < 0)
+        return ret;
+
+    ret = ngli_node_init_ressources(node);
+    if (ret < 0)
+        return ret;
+
+    return ret;
 }
 
 void ngli_node_detach_ctx(struct ngl_node *node, struct ngl_ctx *ctx)
 {
     int ret = node_set_ctx(node, NULL, ctx);
     ngli_assert(ret == 0);
+}
+
+int ngli_node_init_ressources(struct ngl_node *node)
+{
+    if (node->class->init_ressources) {
+        TRACE("INIT_RESSOURCES %s @ %p", node->label, node);
+        int ret = node->class->init_ressources(node);
+        if (ret < 0) {
+            LOG(ERROR, "initializing ressources of node %s failed: %s", node->label, NGLI_RET_STR(ret));
+            return ret;
+        }
+    } else {
+        struct darray *children_array = &node->children;
+        struct ngl_node **children = ngli_darray_data(children_array);
+        for (int i = 0; i < ngli_darray_count(children_array); i++) {
+            struct ngl_node *child = children[i];
+            int ret = ngli_node_init_ressources(child);
+            if (ret < 0)
+                return ret;
+        }
+    }
+
+    return 0;
 }
 
 int ngli_node_visit(struct ngl_node *node, int is_active, double t)

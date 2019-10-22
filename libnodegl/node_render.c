@@ -24,6 +24,7 @@
 #include <string.h>
 #include <limits.h>
 
+#include "darray.h"
 #include "hmap.h"
 #include "log.h"
 #include "nodegl.h"
@@ -42,7 +43,7 @@ struct render_priv {
     struct hmap *instance_attributes;
     int nb_instances;
 
-    struct pass pass;
+    struct darray passes;
 };
 
 #define TEXTURES_TYPES_LIST (const int[]){NGL_NODE_TEXTURE2D,       \
@@ -120,8 +121,18 @@ static const struct node_param render_params[] = {
 
 static int render_init(struct ngl_node *node)
 {
+    struct render_priv *s = node->priv_data;
+    ngli_darray_init(&s->passes, sizeof(struct pass), 0);
+    return 0;
+}
+
+static int render_init_ressources(struct ngl_node *node)
+{
     struct ngl_ctx *ctx = node->ctx;
     struct render_priv *s = node->priv_data;
+    struct pass *pass = ngli_darray_push(&s->passes, NULL);
+    if (!pass)
+        return NGL_ERROR_MEMORY;
     struct pass_params params = {
         .label = node->label,
         .geometry = s->geometry,
@@ -132,32 +143,53 @@ static int render_init(struct ngl_node *node)
         .attributes = s->attributes,
         .instance_attributes = s->instance_attributes,
         .nb_instances = s->nb_instances,
+        .config = ctx->graphicconfig,
     };
-    return ngli_pass_init(&s->pass, ctx, &params);
+    return ngli_pass_init(pass, ctx, &params);
+
 }
 
 static void render_uninit(struct ngl_node *node)
 {
     struct render_priv *s = node->priv_data;
-    ngli_pass_uninit(&s->pass);
 }
 
 static int render_update(struct ngl_node *node, double t)
 {
     struct render_priv *s = node->priv_data;
-    return ngli_pass_update(&s->pass, t);
+    /* FIXME */
+    struct pass *passes = ngli_darray_data(&s->passes);
+    int nb_passes = ngli_darray_count(&s->passes);
+    for (int i = 0; i < nb_passes; i++) {
+        int ret = ngli_pass_update(&passes[i], t);
+        if (ret < 0)
+            return ret;
+    }
+    return 0;
 }
 
 static void render_draw(struct ngl_node *node)
 {
+    struct ngl_ctx *ctx = node->ctx;
     struct render_priv *s = node->priv_data;
-    ngli_pass_exec(&s->pass);
+
+    struct pass *passes = ngli_darray_data(&s->passes);
+    int nb_passes = ngli_darray_count(&s->passes);
+    LOG(ERROR, "nb_passes=%d", nb_passes);
+    for (int i = 0; i < nb_passes; i++) {
+        if (!memcmp(&passes[i].params.config, &ctx->graphicconfig, sizeof(ctx->graphicconfig))) {
+            int ret = ngli_pass_exec(&passes[i]);
+            if (ret < 0)
+                return;
+        }
+    }
 }
 
 const struct node_class ngli_render_class = {
     .id        = NGL_NODE_RENDER,
     .name      = "Render",
     .init      = render_init,
+    .init_ressources = render_init_ressources,
     .uninit    = render_uninit,
     .update    = render_update,
     .draw      = render_draw,

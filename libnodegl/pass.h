@@ -26,6 +26,7 @@
 #include "darray.h"
 #include "glcontext.h"
 #include "glincludes.h"
+#include "graphicconfig.h"
 #include "pipeline.h"
 #include "program.h"
 
@@ -41,6 +42,7 @@ struct pass_params {
     int nb_instances;
     struct hmap *attributes;
     struct hmap *instance_attributes;
+    struct graphicconfig config;
 
     /* compute */
     int nb_group_x;

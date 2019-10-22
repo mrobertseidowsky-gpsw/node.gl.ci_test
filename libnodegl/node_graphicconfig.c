@@ -290,6 +290,18 @@ static void honor_config(struct ngl_node *node, int restore)
     }
 }
 
+static int graphicconfig_init_ressources(struct ngl_node *node)
+{
+    struct graphicconfig_priv *s = node->priv_data;
+    struct ngl_node *child = s->child;
+
+    honor_config(node, 0);
+    ngli_node_init_ressources(child);
+    honor_config(node, 1);
+
+    return 0;
+}
+
 static void graphicconfig_draw(struct ngl_node *node)
 {
     struct graphicconfig_priv *s = node->priv_data;
@@ -304,6 +316,7 @@ const struct node_class ngli_graphicconfig_class = {
     .id        = NGL_NODE_GRAPHICCONFIG,
     .name      = "GraphicConfig",
     .init      = graphicconfig_init,
+    .init_ressources = graphicconfig_init_ressources,
     .update    = graphicconfig_update,
     .draw      = graphicconfig_draw,
     .priv_size = sizeof(struct graphicconfig_priv),

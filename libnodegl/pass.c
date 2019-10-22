@@ -472,6 +472,7 @@ static int pass_graphics_init(struct pass *s)
         graphics->nb_indices = indices_priv->count;
         graphics->indices_format = indices_priv->data_format;
         graphics->indices = &indices_priv->buffer;
+        graphics->config = params->config;
     } else {
         struct ngl_node *vertices = geometry_priv->vertices_buffer;
         struct buffer_priv *buffer_priv = vertices->priv_data;
