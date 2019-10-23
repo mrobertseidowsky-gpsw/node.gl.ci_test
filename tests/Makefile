@@ -21,25 +21,15 @@
 
 include ../common.mak
 
-VISUAL ?= no
 
 all: tests
+
+tests: tests_api tests_visual
 
 tests_api:
 	$(PYTHON) api.py
 
-tests_serial:
-	$(PYTHON) serialize.py data
+tests_visual:
+	$(PYTHON) visual.py
 
-ifeq ($(VISUAL),yes)
-RENDER_FLAGS = -w -z 1
-endif
-tests: tests_api tests_serial
-	@for f in data/*.ngl; do \
-		ngl-render $$f -t 3:2:5 -t 0:1:60 -t 7:3:15 $(RENDER_FLAGS); \
-	done
-
-clean:
-	$(RM) -r data
-
-.PHONY: clean tests tests_api tests_serial all
+.PHONY: tests tests_api test_visual all
