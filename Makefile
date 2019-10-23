@@ -13,3 +13,9 @@ clean_py:
 clean: clean_py
 	$(MAKE) -C libnodegl clean
 	$(MAKE) -C ngl-tools clean
+
+coverage:
+	$(MAKE) -C tests
+	$(MAKE) -C libnodegl tests
+	mkdir -p ngl-cov
+	gcovr -r . --html-details -o ngl-cov/index.html

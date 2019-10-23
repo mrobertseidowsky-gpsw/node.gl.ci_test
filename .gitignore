@@ -1,3 +1,6 @@
 *.d
 *.exe
 *.o
+*.gcda
+*.gcno
+ngl-cov/
