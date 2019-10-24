@@ -8,6 +8,7 @@
 #include <va/va_drmcommon.h>
 
 #include "egl.h"
+#include "format.h"
 #include "glincludes.h"
 #include "hwupload.h"
 #include "image.h"
