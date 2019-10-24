@@ -21,6 +21,7 @@
 
 #include <string.h>
 
+#include "bstr.h"
 #include "buffer.h"
 #include "colorconv.h"
 #include "hwconv.h"
@@ -31,6 +32,7 @@
 #include "log.h"
 #include "math_utils.h"
 #include "memory.h"
+#include "nodegl.h"
 #include "nodes.h"
 #include "pipeline.h"
 #include "program.h"
@@ -110,6 +112,67 @@
     "    color = color_matrix * vec4(yuv, 1.0);"                            "\n" \
     "}"
 
+static void build_vertex_shader(struct ngl_ctx *ctx, int layout, struct bstr *bstr)
+{
+    struct glcontext *gl = ctx->glcontext;
+
+    ngli_bstr_clear(bstr);
+    ngli_bstr_print(bstr, "#version %d%s\n", gl->glsl_version, gl->backend == NGL_BACKEND_OPENGLES ? " es" : "");
+    if (gl->backend == NGL_BACKEND_OPENGLES)
+        ngli_bstr_print(bstr, "precision highp float;\n");
+    ngli_bstr_print(bstr, "%s vec4 position;\n", gl->glsl_version >= 130 ? "in"  : "attribute");
+    ngli_bstr_print(bstr, "uniform mat4 tex_coord_matrix;\n");
+    ngli_bstr_print(bstr, "%s vec2 tex_coord;\n", gl->glsl_version >= 130 ? "out" : "varying");
+    ngli_bstr_print(bstr, "void main()\n{\n");
+    ngli_bstr_print(bstr, "    gl_Position = vec4(position.xy, 0.0, 1.0);\n");
+    ngli_bstr_print(bstr, "    tex_coord = (tex_coord_matrix * vec4(position.zw, 0.0, 1.0)).xy;\n");
+    ngli_bstr_print(bstr, "}\n");
+}
+
+static void build_fragment_shader(struct ngl_ctx *ctx, int layout, struct bstr *bstr)
+{
+    struct glcontext *gl = ctx->glcontext;
+
+    ngli_bstr_clear(bstr);
+    ngli_bstr_print(bstr, "#version %d%s\n", gl->glsl_version, gl->backend == NGL_BACKEND_OPENGLES ? " es" : "");
+    if (layout == NGLI_IMAGE_LAYOUT_MEDIACODEC)
+        ngli_bstr_print(bstr, "#extension %s: require\n",
+                        gl->glsl_version >= 300 ? "GL_OES_EGL_image_external_essl3" : "GL_OES_EGL_image_external");
+    if (gl->backend == NGL_BACKEND_OPENGLES)
+        ngli_bstr_print(bstr, "precision mediump float;\n");
+
+    if (layout == NGLI_IMAGE_LAYOUT_MEDIACODEC) {
+        ngli_bstr_print(bstr, "uniform samplerExternalOES tex0;\n");
+    } else if (layout == NGLI_IMAGE_LAYOUT_NV12) {
+        ngli_bstr_print(bstr, "uniform sampler2D tex0;\n");
+        ngli_bstr_print(bstr, "uniform sampler2D tex1;\n");
+    } else if (layout == NGLI_IMAGE_LAYOUT_NV12_RECTANGLE) {
+        ngli_bstr_print(bstr, "uniform mediump sampler2DRect tex0;\n");
+        ngli_bstr_print(bstr, "uniform mediump sampler2DRect tex1;\n");
+    }
+    ngli_bstr_print(bstr, "uniform mat4 color_matrix;\n");
+    ngli_bstr_print(bstr, "%s vec2 tex_coord;\n", gl->glsl_version >= 130 ? "in" : "attribute");
+
+    if (gl->glsl_version >= 130)
+        ngli_bstr_print(bstr, "out vec4 frag_color;\n");
+    ngli_bstr_print(bstr, "void main(void)\n");
+    ngli_bstr_print(bstr, "{\n");
+
+    if (layout == NGLI_IMAGE_LAYOUT_MEDIACODEC) {
+        ngli_bstr_print(bstr, "    vec4 color = %s(tex0, tex_coord);\n", gl->glsl_version >= 130 ? "texture" : "texture2D");
+    } else if (layout == NGLI_IMAGE_LAYOUT_NV12) {
+        ngli_bstr_print(bstr, "    vec3 color;\n");
+        ngli_bstr_print(bstr, "    color.x = texture2D(tex0, tex_coord).r;\n");
+        ngli_bstr_print(bstr, "    color.yz = texture2D(tex1, tex_coord).%s;\n", gl->version >= 300 ? "rg" : "ra");
+    } else if (layout == NGLI_IMAGE_LAYOUT_NV12_RECTANGLE) {
+        ngli_bstr_print(bstr, "    vec3 color;\n");
+        ngli_bstr_print(bstr, "    color.x = texture2D(tex0, tex_coord).r;\n");
+        ngli_bstr_print(bstr, "    color.yz = texture2D(tex1, tex_coord / vec2(2.0)).%s;\n", gl->version >= 300 ? "rg" : "ra");
+    }
+    ngli_bstr_print(bstr, "    %s = color_matrix * vec4(color.rgb, 1.0);\n", gl->glsl_version >= 130 ? "frag_color" : "gl_FragColor");
+    ngli_bstr_print(bstr, "}\n");
+}
+
 static const struct hwconv_desc {
     int nb_planes;
     const char *vertex_data;
@@ -171,7 +234,15 @@ int ngli_hwconv_init(struct hwconv *hwconv, struct ngl_ctx *ctx,
     if (!fragment_data)
         return NGL_ERROR_MEMORY;
 
-    ret = ngli_program_init(&hwconv->program, ctx, desc->vertex_data, fragment_data, NULL);
+
+    struct bstr *vertex_bstr = ngli_bstr_create();
+    struct bstr *fragment_bstr = ngli_bstr_create();
+    build_vertex_shader(ctx, src_layout, vertex_bstr);
+    LOG(ERROR, "%s", ngli_bstr_strptr(vertex_bstr));
+    build_fragment_shader(ctx, src_layout, fragment_bstr);
+    LOG(ERROR, "%s", ngli_bstr_strptr(fragment_bstr));
+
+    ret = ngli_program_init(&hwconv->program, ctx, ngli_bstr_strptr(vertex_bstr), ngli_bstr_strptr(fragment_bstr), NULL);
     ngli_free(fragment_data);
     if (ret < 0)
         return ret;
