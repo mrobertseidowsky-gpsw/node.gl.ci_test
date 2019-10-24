@@ -77,6 +77,7 @@ struct glcontext {
 
     /* GL api */
     int version;
+    int glsl_version;
 
     /* GL features */
     int features;

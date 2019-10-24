@@ -109,6 +109,26 @@ static int glcontext_load_functions(struct glcontext *glcontext)
     return 0;
 }
 
+static int glcontext_probe_glsl_version(struct glcontext *glcontext)
+{
+    if (glcontext->backend == NGL_BACKEND_OPENGL) {
+        switch (glcontext->version) {
+        case 300: glcontext->glsl_version = 130;                break;
+        case 310: glcontext->glsl_version = 140;                break;
+        case 320: glcontext->glsl_version = 150;                break;
+        default:  glcontext->glsl_version = glcontext->version; break;
+        }
+    } else {
+        glcontext->glsl_version = 100;
+        if (glcontext->version >= 300)
+            glcontext->glsl_version = glcontext->version;
+    }
+    LOG(INFO, "GLSL version: %d%s", glcontext->glsl_version,
+        glcontext->backend == NGL_BACKEND_OPENGLES ? " ES" : "");
+
+    return 0;
+}
+
 static int glcontext_probe_version(struct glcontext *glcontext)
 {
     GLint major_version;
@@ -311,6 +331,10 @@ static int glcontext_load_extensions(struct glcontext *glcontext)
         return ret;
 
     ret = glcontext_probe_version(glcontext);
+    if (ret < 0)
+        return ret;
+
+    ret = glcontext_probe_glsl_version(glcontext);
     if (ret < 0)
         return ret;
 
