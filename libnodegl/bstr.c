@@ -72,10 +72,9 @@ int ngli_bstr_append(struct bstr *b, const char *str)
 int ngli_bstr_print(struct bstr *b, const char *fmt, ...)
 {
     va_list va;
-    int len;
 
     va_start(va, fmt);
-    len = vsnprintf(NULL, 0, fmt, va);
+    int len = vsnprintf(NULL, 0, fmt, va);
     va_end(va);
     if (len < 0)
         return len;
