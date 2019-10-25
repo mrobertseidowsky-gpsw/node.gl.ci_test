@@ -283,6 +283,8 @@ testprogs: $(TESTPROGS)
 
 test_asm: LDLIBS = $(PROJECT_LDLIBS) -lm
 test_asm: test_asm.o math_utils.o $(LIB_OBJS_ARCH_$(ARCH))
+test_bstr: LDLIBS = $(LIB_LDLIBS) -lm
+test_bstr: test_bstr.o bstr.o memory.o utils.o
 test_colorconv: LDLIBS = $(PROJECT_LDLIBS) -lm
 test_colorconv: test_colorconv.o colorconv.o log.o
 test_darray: test_darray.o darray.o memory.o

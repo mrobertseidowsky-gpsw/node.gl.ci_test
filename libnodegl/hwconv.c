@@ -41,136 +41,85 @@
 #include "type.h"
 #include "utils.h"
 
-#define VERTEX_DATA                                                              \
-    "#version 100"                                                          "\n" \
-    "precision highp float;"                                                "\n" \
-    "attribute vec4 position;"                                              "\n" \
-    "uniform mat4 tex_coord_matrix;"                                        "\n" \
-    "varying vec2 tex_coord;"                                               "\n" \
-    "void main()"                                                           "\n" \
-    "{"                                                                     "\n" \
-    "    gl_Position = vec4(position.xy, 0.0, 1.0);"                        "\n" \
-    "    tex_coord = (tex_coord_matrix * vec4(position.zw, 0.0, 1.0)).xy;"  "\n" \
-    "}"
+#define GLSL_ADD(bstr, ...) do {                  \
+    int ret = ngli_bstr_print(bstr, __VA_ARGS__); \
+    if (ret < 0)                                  \
+        return ret;                               \
+} while (0)
 
-#define OES_TO_RGBA_FRAGMENT_DATA                                                \
-    "#version 100"                                                          "\n" \
-    "#extension GL_OES_EGL_image_external : require"                        "\n" \
-    "precision mediump float;"                                              "\n" \
-    "uniform samplerExternalOES tex0;"                                      "\n" \
-    "varying vec2 tex_coord;"                                               "\n" \
-    "void main(void)"                                                       "\n" \
-    "{"                                                                     "\n" \
-    "    vec4 color = texture2D(tex0, tex_coord);"                          "\n" \
-    "    gl_FragColor = vec4(color.rgb, 1.0);"                              "\n" \
-    "}"
+#define GLSL_XDD(bstr, str) do {                  \
+    int ret = ngli_bstr_append(bstr, str);        \
+    if (ret < 0)                                  \
+        return ret;                               \
+} while (0)
 
-#define NV12_TO_RGBA_FRAGMENT_DATA                                               \
-    "#version 100"                                                          "\n" \
-    "precision mediump float;"                                              "\n" \
-    "uniform sampler2D tex0;"                                               "\n" \
-    "uniform sampler2D tex1;"                                               "\n" \
-    "varying vec2 tex_coord;"                                               "\n" \
-    "uniform mat4 color_matrix;"                                            "\n" \
-    "void main(void)"                                                       "\n" \
-    "{"                                                                     "\n" \
-    "    vec3 yuv;"                                                         "\n" \
-    "    yuv.x = texture2D(tex0, tex_coord).r;"                             "\n" \
-    "    yuv.yz = texture2D(tex1, tex_coord).%s;"                           "\n" \
-    "    gl_FragColor = color_matrix * vec4(yuv, 1.0);"                     "\n" \
-    "}"
-
-#define NV12_RECTANGLE_TO_RGBA_VERTEX_DATA                                       \
-    "#version 410"                                                          "\n" \
-    "precision highp float;"                                                "\n" \
-    "uniform mat4 tex_coord_matrix;"                                        "\n" \
-    "uniform vec2 tex_dimensions[2];"                                       "\n" \
-    "in vec4 position;"                                                     "\n" \
-    "out vec2 tex0_coord;"                                                  "\n" \
-    "out vec2 tex1_coord;"                                                  "\n" \
-    "void main()"                                                           "\n" \
-    "{"                                                                     "\n" \
-    "    gl_Position = vec4(position.xy, 0.0, 1.0);"                        "\n" \
-    "    vec2 coord = (tex_coord_matrix * vec4(position.zw, 0.0, 1.0)).xy;" "\n" \
-    "    tex0_coord = coord * tex_dimensions[0];"                           "\n" \
-    "    tex1_coord = coord * tex_dimensions[1];"                           "\n" \
-    "}"
-
-#define NV12_RECTANGLE_TO_RGBA_FRAGMENT_DATA                                     \
-    "#version 410"                                                          "\n" \
-    "uniform mediump sampler2DRect tex0;"                                   "\n" \
-    "uniform mediump sampler2DRect tex1;"                                   "\n" \
-    "uniform mat4 color_matrix;"                                            "\n" \
-    "in vec2 tex0_coord;"                                                   "\n" \
-    "in vec2 tex1_coord;"                                                   "\n" \
-    "out vec4 color;"                                                       "\n" \
-    "void main(void)"                                                       "\n" \
-    "{"                                                                     "\n" \
-    "    vec3 yuv;"                                                         "\n" \
-    "    yuv.x = texture(tex0, tex0_coord).r;"                              "\n" \
-    "    yuv.yz = texture(tex1, tex1_coord).%s;"                            "\n" \
-    "    color = color_matrix * vec4(yuv, 1.0);"                            "\n" \
-    "}"
-
-static void build_vertex_shader(struct ngl_ctx *ctx, int layout, struct bstr *bstr)
+static int build_vertex_shader(struct bstr *bstr, struct glcontext *gl, int layout)
 {
-    struct glcontext *gl = ctx->glcontext;
+    const int backend = gl->backend;
+    const int glsl_version = gl->glsl_version;
 
-    ngli_bstr_clear(bstr);
-    ngli_bstr_print(bstr, "#version %d%s\n", gl->glsl_version, gl->backend == NGL_BACKEND_OPENGLES ? " es" : "");
-    if (gl->backend == NGL_BACKEND_OPENGLES)
-        ngli_bstr_print(bstr, "precision highp float;\n");
-    ngli_bstr_print(bstr, "%s vec4 position;\n", gl->glsl_version >= 130 ? "in"  : "attribute");
-    ngli_bstr_print(bstr, "uniform mat4 tex_coord_matrix;\n");
-    ngli_bstr_print(bstr, "%s vec2 tex_coord;\n", gl->glsl_version >= 130 ? "out" : "varying");
-    ngli_bstr_print(bstr, "void main()\n{\n");
-    ngli_bstr_print(bstr, "    gl_Position = vec4(position.xy, 0.0, 1.0);\n");
-    ngli_bstr_print(bstr, "    tex_coord = (tex_coord_matrix * vec4(position.zw, 0.0, 1.0)).xy;\n");
-    ngli_bstr_print(bstr, "}\n");
+    GLSL_ADD(bstr, "#version %d%s\n", glsl_version, backend == NGL_BACKEND_OPENGLES ? " es" : "");
+    if (backend == NGL_BACKEND_OPENGLES)
+        GLSL_XDD(bstr, "precision highp float;\n");
+    GLSL_ADD(bstr, "%s vec4 position;\n", glsl_version >= 130 ? "in"  : "attribute");
+    GLSL_XDD(bstr, "uniform mat4 tex_coord_matrix;\n");
+    GLSL_ADD(bstr, "%s vec2 tex_coord;\n", glsl_version >= 130 ? "out" : "varying");
+    GLSL_XDD(bstr, "void main()\n{\n");
+    GLSL_XDD(bstr, "    gl_Position = vec4(position.xy, 0.0, 1.0);\n");
+    GLSL_XDD(bstr, "    tex_coord = (tex_coord_matrix * vec4(position.zw, 0.0, 1.0)).xy;\n");
+    GLSL_XDD(bstr, "}\n");
+
+    return 0;
 }
 
-static void build_fragment_shader(struct ngl_ctx *ctx, int layout, struct bstr *bstr)
+static int build_fragment_shader(struct bstr *bstr, struct glcontext *gl, int layout)
 {
-    struct glcontext *gl = ctx->glcontext;
+    const int backend = gl->backend;
+    const int gl_version = gl->version;
+    const int glsl_version = gl->glsl_version;
 
-    ngli_bstr_clear(bstr);
-    ngli_bstr_print(bstr, "#version %d%s\n", gl->glsl_version, gl->backend == NGL_BACKEND_OPENGLES ? " es" : "");
-    if (layout == NGLI_IMAGE_LAYOUT_MEDIACODEC)
-        ngli_bstr_print(bstr, "#extension %s: require\n",
-                        gl->glsl_version >= 300 ? "GL_OES_EGL_image_external_essl3" : "GL_OES_EGL_image_external");
-    if (gl->backend == NGL_BACKEND_OPENGLES)
-        ngli_bstr_print(bstr, "precision mediump float;\n");
-
+    GLSL_ADD(bstr, "#version %d%s\n", glsl_version, backend == NGL_BACKEND_OPENGLES ? " es" : "");
     if (layout == NGLI_IMAGE_LAYOUT_MEDIACODEC) {
-        ngli_bstr_print(bstr, "uniform samplerExternalOES tex0;\n");
-    } else if (layout == NGLI_IMAGE_LAYOUT_NV12) {
-        ngli_bstr_print(bstr, "uniform sampler2D tex0;\n");
-        ngli_bstr_print(bstr, "uniform sampler2D tex1;\n");
-    } else if (layout == NGLI_IMAGE_LAYOUT_NV12_RECTANGLE) {
-        ngli_bstr_print(bstr, "uniform mediump sampler2DRect tex0;\n");
-        ngli_bstr_print(bstr, "uniform mediump sampler2DRect tex1;\n");
+        const char *ext = glsl_version >= 310 ? "GL_OES_EGL_image_external_essl3" : "GL_OES_EGL_image_external";
+        GLSL_ADD(bstr, "#extension %s: require\n", ext);
     }
-    ngli_bstr_print(bstr, "uniform mat4 color_matrix;\n");
-    ngli_bstr_print(bstr, "%s vec2 tex_coord;\n", gl->glsl_version >= 130 ? "in" : "attribute");
-
-    if (gl->glsl_version >= 130)
-        ngli_bstr_print(bstr, "out vec4 frag_color;\n");
-    ngli_bstr_print(bstr, "void main(void)\n");
-    ngli_bstr_print(bstr, "{\n");
-
-    if (layout == NGLI_IMAGE_LAYOUT_MEDIACODEC) {
-        ngli_bstr_print(bstr, "    vec4 color = %s(tex0, tex_coord);\n", gl->glsl_version >= 130 ? "texture" : "texture2D");
+    if (backend == NGL_BACKEND_OPENGLES)
+        GLSL_XDD(bstr, "precision mediump float;\n");
+    if (layout == NGLI_IMAGE_LAYOUT_DEFAULT)
+        GLSL_XDD(bstr, "uniform sampler2D tex0;\n");
+    else if (layout == NGLI_IMAGE_LAYOUT_MEDIACODEC) {
+        GLSL_XDD(bstr, "uniform samplerExternalOES tex0;\n");
     } else if (layout == NGLI_IMAGE_LAYOUT_NV12) {
-        ngli_bstr_print(bstr, "    vec3 color;\n");
-        ngli_bstr_print(bstr, "    color.x = texture2D(tex0, tex_coord).r;\n");
-        ngli_bstr_print(bstr, "    color.yz = texture2D(tex1, tex_coord).%s;\n", gl->version >= 300 ? "rg" : "ra");
+        GLSL_XDD(bstr, "uniform sampler2D tex0;\n");
+        GLSL_XDD(bstr, "uniform sampler2D tex1;\n");
     } else if (layout == NGLI_IMAGE_LAYOUT_NV12_RECTANGLE) {
-        ngli_bstr_print(bstr, "    vec3 color;\n");
-        ngli_bstr_print(bstr, "    color.x = texture2D(tex0, tex_coord).r;\n");
-        ngli_bstr_print(bstr, "    color.yz = texture2D(tex1, tex_coord / vec2(2.0)).%s;\n", gl->version >= 300 ? "rg" : "ra");
+        GLSL_XDD(bstr, "uniform mediump sampler2DRect tex0;\n");
+        GLSL_XDD(bstr, "uniform mediump sampler2DRect tex1;\n");
     }
-    ngli_bstr_print(bstr, "    %s = color_matrix * vec4(color.rgb, 1.0);\n", gl->glsl_version >= 130 ? "frag_color" : "gl_FragColor");
-    ngli_bstr_print(bstr, "}\n");
+    GLSL_ADD(bstr, "uniform mat4 color_matrix;\n");
+    GLSL_ADD(bstr, "%s vec2 tex_coord;\n", glsl_version >= 130 ? "in" : "attribute");
+    if (glsl_version >= 130)
+        GLSL_ADD(bstr, "out vec4 frag_color;\n");
+    GLSL_ADD(bstr, "void main(void)\n");
+    GLSL_ADD(bstr, "{\n");
+
+    const char *texture_func = glsl_version >= 130 ? "texture" : "texture2D";
+    const char *rg_components = gl_version >= 300 ? "rg" : "ra";
+    if (layout == NGLI_IMAGE_LAYOUT_DEFAULT ||
+        layout == NGLI_IMAGE_LAYOUT_MEDIACODEC)  {
+        GLSL_ADD(bstr, "    vec3 color = %s(tex0, tex_coord).rgb;\n", texture_func);
+    } else if (layout == NGLI_IMAGE_LAYOUT_NV12) {
+        GLSL_XDD(bstr, "    vec3 color;\n");
+        GLSL_ADD(bstr, "    color.x = %s(tex0, tex_coord).r;\n", texture_func);
+        GLSL_ADD(bstr, "    color.yz = %s(tex1, tex_coord).%s;\n", texture_func, rg_components);
+    } else if (layout == NGLI_IMAGE_LAYOUT_NV12_RECTANGLE) {
+        GLSL_XDD(bstr, "    vec3 color;\n");
+        GLSL_ADD(bstr, "    color.x = %s(tex0, tex_coord).r;\n", texture_func);
+        GLSL_ADD(bstr, "    color.yz = %s(tex1, tex_coord / vec2(2.0)).%s;\n", texture_func, rg_components);
+    }
+    GLSL_ADD(bstr, "    %s = color_matrix * vec4(color.rgb, 1.0);\n", glsl_version >= 130 ? "frag_color" : "gl_FragColor");
+    GLSL_XDD(bstr, "}\n");
+    return 0;
 }
 
 static const struct hwconv_desc {
@@ -180,20 +129,16 @@ static const struct hwconv_desc {
 } hwconv_descs[] = {
     [NGLI_IMAGE_LAYOUT_MEDIACODEC] = {
         .nb_planes = 1,
-        .vertex_data = VERTEX_DATA,
-        .fragment_data = OES_TO_RGBA_FRAGMENT_DATA,
     },
     [NGLI_IMAGE_LAYOUT_NV12] = {
         .nb_planes = 2,
-        .vertex_data = VERTEX_DATA,
-        .fragment_data = NV12_TO_RGBA_FRAGMENT_DATA,
     },
     [NGLI_IMAGE_LAYOUT_NV12_RECTANGLE] = {
         .nb_planes = 2,
-        .vertex_data = NV12_RECTANGLE_TO_RGBA_VERTEX_DATA,
-        .fragment_data = NV12_RECTANGLE_TO_RGBA_FRAGMENT_DATA,
     },
 };
+
+#include "utils.h"
 
 int ngli_hwconv_init(struct hwconv *hwconv, struct ngl_ctx *ctx,
                      const struct image *dst_image,
@@ -229,21 +174,54 @@ int ngli_hwconv_init(struct hwconv *hwconv, struct ngl_ctx *ctx,
     }
     const struct hwconv_desc *desc = &hwconv_descs[src_layout];
 
-    const char *uv = gl->version < 300 ? "ra": "rg";
-    char *fragment_data = ngli_asprintf(desc->fragment_data, uv);
-    if (!fragment_data)
-        return NGL_ERROR_MEMORY;
+    int64_t t = ngli_gettime();
+    for (int i = 0; i < 1000; i++) {
+        struct bstr *vertex_bstr = ngli_bstr_create();
+        ret = build_vertex_shader(vertex_bstr, gl, src_layout);
+        if (ret < 0)
+            return ret;
 
+        ngli_bstr_freep(&vertex_bstr);
+    }
+    int64_t t2 = ngli_gettime();
+    LOG(ERROR, "V took %fus", (t2 - t) / (double)1000);
+
+
+    /* */
+    t = ngli_gettime();
+    for (int i = 0; i < 1000; i++) {
+        struct bstr *vertex_bstr = ngli_bstr_create();
+        ret = build_vertex_shader(vertex_bstr, gl, src_layout);
+        if (ret < 0)
+            return ret;
+
+        struct bstr *fragment_bstr = ngli_bstr_create();
+        ret = build_fragment_shader(fragment_bstr, gl, src_layout);
+        if (ret < 0)
+            return ret;
+
+        ngli_bstr_freep(&vertex_bstr);
+        ngli_bstr_freep(&fragment_bstr);
+    }
+    t2 = ngli_gettime();
+    LOG(ERROR, "took %fus", (t2 - t) / (double)1000);
+    /* */
 
     struct bstr *vertex_bstr = ngli_bstr_create();
+    ret = build_vertex_shader(vertex_bstr, gl, src_layout);
+    if (ret < 0)
+        return ret;
+
     struct bstr *fragment_bstr = ngli_bstr_create();
-    build_vertex_shader(ctx, src_layout, vertex_bstr);
+    ret = build_fragment_shader(fragment_bstr, gl, src_layout);
+    if (ret < 0)
+        return ret;
+
     LOG(ERROR, "%s", ngli_bstr_strptr(vertex_bstr));
-    build_fragment_shader(ctx, src_layout, fragment_bstr);
     LOG(ERROR, "%s", ngli_bstr_strptr(fragment_bstr));
 
+
     ret = ngli_program_init(&hwconv->program, ctx, ngli_bstr_strptr(vertex_bstr), ngli_bstr_strptr(fragment_bstr), NULL);
-    ngli_free(fragment_data);
     if (ret < 0)
         return ret;
 

@@ -74,27 +74,27 @@ int ngli_bstr_print(struct bstr *b, const char *fmt, ...)
     va_list va;
 
     va_start(va, fmt);
-    const int avail = b->bufsize - b->len - 1;
-    int len = vsnprintf(NULL, 0, fmt, va);
+    const int avail = b->bufsize - b->len;
+    int len = vsnprintf(b->str + b->len, avail, fmt, va);
     va_end(va);
-    if (len < 0)
+    if (len < 0) {
         return len;
+    }
 
-    if (len > avail) {
+    printf("%d %d\n", len + 1, avail);
+    if (len + 1 > avail) {
         const int new_size = b->len + len + 1;
         void *ptr = ngli_realloc(b->str, new_size);
         if (!ptr)
             return 0;
         b->str = ptr;
         b->bufsize = new_size;
-    }
-
-    va_start(va, fmt);
-    len = vsnprintf(b->str + b->len, len + 1, fmt, va);
-    va_end(va);
-    if (len < 0) {
-        b->str[b->len] = 0;
-        return len;
+        va_start(va, fmt);
+        len = vsnprintf(b->str + b->len, len + 1, fmt, va);
+        va_end(va);
+        if (len < 0) {
+            return len;
+        }
     }
 
     b->len = b->len + len;
