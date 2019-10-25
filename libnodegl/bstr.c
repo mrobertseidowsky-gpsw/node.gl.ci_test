@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <string.h>
 #include "bstr.h"
 #include "memory.h"
 
@@ -47,6 +48,25 @@ struct bstr *ngli_bstr_create(void)
     }
     b->str[0] = 0;
     return b;
+}
+
+int ngli_bstr_append(struct bstr *b, const char *str)
+{
+    if (!str)
+        return 0;
+    const size_t len = strlen(str);
+    const size_t avail = b->bufsize - b->len - 1;
+    if (len > avail) {
+        const int new_size = b->len + len + 1;
+        void *ptr = ngli_realloc(b->str, new_size);
+        if (!ptr)
+            return 0;
+        b->str = ptr;
+        b->bufsize = new_size;
+    }
+    memcpy(b->str + b->len, str, len + 1);
+    b->len += len;
+    return 0;
 }
 
 int ngli_bstr_print(struct bstr *b, const char *fmt, ...)

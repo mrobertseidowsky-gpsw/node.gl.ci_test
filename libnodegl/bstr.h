@@ -29,6 +29,7 @@
 struct bstr;
 
 struct bstr *ngli_bstr_create(void);
+int ngli_bstr_append(struct bstr *b, const char *str);
 int ngli_bstr_print(struct bstr *b, const char *fmt, ...) ngli_printf_format(2, 3);
 void ngli_bstr_clear(struct bstr *b);
 char *ngli_bstr_strdup(struct bstr *b);
