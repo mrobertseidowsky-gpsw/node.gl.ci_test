@@ -114,8 +114,8 @@ class Config(QtCore.QObject):
 
         self._needs_saving = False
 
-    def get(self, key):
-        ret = self._cfg.get(key)
+    def get(self, key, default=None):
+        ret = self._cfg.get(key, default)
         return tuple(ret) if isinstance(ret, list) else ret
 
     def _set_cfg(self, key, value):
