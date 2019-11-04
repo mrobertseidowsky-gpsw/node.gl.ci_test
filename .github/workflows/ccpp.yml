@@ -10,4 +10,5 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install dependencie
-    - run: sudo apt-get install libavfilter-dev  libavcodec-dev libglfw3-devs cython python-pyqt5 python-pyqt5.qtsvg
+      run: sudo apt-get install libavfilter-dev  libavcodec-dev libglfw3-devs cython python-pyqt5 python-pyqt5.qtsvg
+ 
