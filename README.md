@@ -1,6 +1,17 @@
 node.gl
 =======
 
+![](https://github.com/mrobertseidowsky-gpsw/node.gl.ci/workflows/.github/workflows/greetings.yml/badge.svg)
+
+![](https://github.com/mrobertseidowsky-gpsw/node.gl.ci/workflows/.github/workflows/greetings.yml/blank.svg)
+
+![](https://github.com/mrobertseidowsky-gpsw/node.gl.ci/workflows/.github/workflows/greetings.yml/label.svg)
+
+
+![](https://github.com/mrobertseidowsky-gpsw/node.gl.ci/workflows/.github/workflows/greetings.yml/label.svg?branch=cboesch/bug)
+
+
+
 `node.gl` is a [GoPro][gopro] OpenGL engine for building and rendering
 graph-based scenes. It is designed to run on both desktop (Linux, OSX, Windows)
 and mobile (Android, iOS).
