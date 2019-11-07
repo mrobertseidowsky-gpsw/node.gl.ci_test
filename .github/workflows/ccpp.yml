@@ -9,36 +9,37 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
-    - name: Install ubuntu libs
-      run: sudo apt-get install libavfilter-dev  libavcodec-dev libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
+#    - name: Install ubuntu libs
+#      run: sudo apt-get install libavfilter-dev  libavcodec-dev libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
     - name: Create repo with my node.gl.ci repo and needed sxplayer
       run: |
-        echo $HOME
-        echo $(ls)
-        echo $?
+        echo "home:" $HOME
+        ls -al 
         mkdir .hiddendir
+        ls -al 
         cp * .hiddendir -R
-        
+        ls -al 
+
         export NGLDIR=$HOME/ngl-build
-        echo $(NGLDIR)
+        echo "NGLDIR:" $NGLDIR
+        
         export PATH=$PATH:$HOME/.local/bin:$NGLDIR/env/bin
-        echo $(ls)
-        echo $?
+        echo "PATH:" $PATH
+
         mkdir -p $NGLDIR
-        echo $(ls)
-        echo $?
+        ls -al 
+
         mkdir -p $NGLDIR/node.gl.ci
-        echo $(ls)
-        echo $?
+        ls -al 
+
         mv .hiddendir/* $NGLDIR/node.gl.ci
-        echo $?
-        echo $(ls)
+        ls -al
+
         mkdir -p $NGLDIR/env
-        echo $?
-        echo $(ls)
+        ls -al 
+
         git clone https://github.com/stupeflix/sxplayer $NGLDIR/sxplayer
-        echo $(ls)
-        echo $?
+        
     - name: C packages
       run: |
         alias make="make -j8"
