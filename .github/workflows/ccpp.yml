@@ -35,7 +35,7 @@ jobs:
     - name: Create repo with needed sxplayer
       run: |
         echo "mrs -----WHO AM I"
-        lsb_release -a
+        lsb_release -a 
         echo "mrs -----LIST DIRECTORIES"
         ls  
         echo "mrs -----CLONE SXPLAYER"
@@ -60,13 +60,13 @@ jobs:
         echo "GO INTO LIBNODEGL"
         cd ../libnodegl
         echo "mrs -----MAKE INST2"
-        PKG_CONFIG_PATH=$NGLDIR/lib/pkgconfig make install PREFIX=$NGLDIR/env
+        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env
         echo $?
         echo "mrs -----MAKE END2"
         echo "mrs -----GO INTO NGLTOOLS"
         cd ../ngl-tools
         echo "mrs -----MAKE INST3"
-        PKG_CONFIG_PATH=$NGLDIR/lib/pkgconfig make install PREFIX=$NGLDIR/env
+        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env
         echo $?
         echo "mrs -----MAKE END3"
 
