@@ -28,7 +28,7 @@ jobs:
         --enable-protocol='file,http'--prefix=$HOME
         make -j8
         echo "mrs -----FFMPEG END"
-        make install 
+        sudo make install 
         echo $?
         ls 
     - name: Build sxplayer ngl-tools libnodegl 
