@@ -19,17 +19,14 @@ jobs:
         cd ffmpeg-4.2.1
         ./configure --enable-debug --disable-stripping --disable-doc \
         --disable-autodetect --enable-zlib --disable-everything \
-         --enable-filter='aformat,aresample,asetnsamples,asettb,copy,format,fps,hflip,palettegen,paletteuse,settb,scale,transpose,vflip' \
+        --enable-filter='aformat,aresample,asetnsamples,asettb,copy,format,fps,hflip,settb,scale,transpose,vflip' \
         --disable-programs --enable-avdevice --enable-swresample \
-        --enable-bsf='aac_adtstoasc,h264_mp4toannexb,hevc_mp4toannexb,mpeg4_unpack_bframes,vp9_superframe' \
-        --enable-encoder='gif,png,mjpeg' \
-        --enable-demuxer='aac,aiff,concat,gif,image_jpeg_pipe,image_pgm_pipe,image_png_pipe,rawvideo,mp3,mp4,mov,wav,asf,avi,image_webp_pipe,flac,matroska,mpegts' \
-        --enable-decoder='alac,mjpeg,png,rawvideo,mp3,pcm_s16le,pcm_s16be,mpeg4,aac,gif,pgm,flac,h263,msmpeg4v1,msmpeg4v2,msmpeg4v3,vc1,vp8,webp,h264' \
-        --enable-parser='mjpeg,png,h264,mpeg4video,aac,flac,hevc,vp8,vp9' \
-        --enable-muxer='gif,image2,mp4,mov,ipod' \
+        --enable-bsf='aac_adtstoasc,h264_mp4toannexb' \
+        --enable-demuxer='aac,image_jpeg_pipe,image_pgm_pipe,image_png_pipe,rawvideo,mp3,mp4,mov,wav,flac,matroska' \
+        --enable-decoder='mjpeg,png,rawvideo,mp3,pcm_s16le,pcm_s16be,aac,pgm,flac,h264' \
+        --enable-parser='mjpeg,png,h264,aac,flac' \
         --enable-protocol='file,http' --prefix=$HOME
 
-        ./configure --prefix=$HOME --disable-autodetect
         make -j8
         echo "mrs -----FFMPEG END"
         make install 
