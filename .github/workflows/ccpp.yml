@@ -13,23 +13,5 @@ jobs:
       run: sudo apt-get install libavfilter-dev  libavcodec-dev libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
     - name: Create repo with my node.gl.ci repo and needed sxplayer
       run: |
-            export PATH=$PATH:.local/bin:$HOME/env/bin
-            mkdir env
-
-            git clone https://github.com/stupeflix/sxplayer
-
-            alias make="make -j8"
-            cd sxplayer
-            make install PREFIX=env
-            cd ..
-            cd libnodegl
-            PKG_CONFIG_PATH=$HOME/env/lib/pkgconfig make install PREFIX=$HOME/env
-            cd ngl-tools
-            PKG_CONFIG_PATH=$HOME/env/lib/pkgconfig make install PREFIX=$HOME/env
-
-            PKG_CONFIG_PATH=$HOME/env/lib/pkgconfig pip2 install --user -e ./pynodegl
- 
-            pip2 install --user -r ./pynodegl-utils/requirements.txt
-            pip2 install --user -e ./pynodegl-utils
-
-            PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig pkg-config --modversion libnodegl 
+        mkdir ngl-build
+        ls -al 
