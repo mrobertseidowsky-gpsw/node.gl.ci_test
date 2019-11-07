@@ -5,7 +5,7 @@ on: [push]
 jobs:
   build:
 
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v1
@@ -43,6 +43,7 @@ jobs:
         echo "mrs -----GO INTO NGLTOOLS"
         cd ../ngl-tools
         echo "mrs -----MAKE INST3"
+        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env
         echo $?
         echo "mrs -----MAKE END3"
 
