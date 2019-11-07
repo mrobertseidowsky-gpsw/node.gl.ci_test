@@ -13,41 +13,23 @@ jobs:
 #      run: sudo apt-get install libavfilter-dev  libavcodec-dev libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
     - name: Create repo with my node.gl.ci repo and needed sxplayer
       run: |
-        echo "home:" $HOME
-        ls -al 
-        mkdir .hiddendir
-        ls -al 
-        cp * .hiddendir -R
-        ls -al 
+            export PATH=$PATH:.local/bin:$HOME/env/bin
+            mkdir env
 
-        export NGLDIR=$HOME/ngl-build
-        echo "NGLDIR:" $NGLDIR
-        
-        export PATH=$PATH:$HOME/.local/bin:$NGLDIR/env/bin
-        echo "PATH:" $PATH
-        mkdir -p $NGLDIR
-        ls -al 
-        mkdir $NGLDIR/node.gl.ci
-        ls -al 
-        mv .hiddendir/* $NGLDIR/node.gl.ci
-        ls -al
-        mkdir $NGLDIR/env
-        ls -al 
-        git clone https://github.com/stupeflix/sxplayer 
+            git clone https://github.com/stupeflix/sxplayer
 
-        alias make="make -j8"
-        cd $NGLDIR/sxplayer
-        make install PREFIX=$NGLDIR/env
-        cd $HOME
-        cd $NGLDIR/node.gl.ci/libnodegl
-        echo $(ls)
-        echo $?
-        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env
-        echo $(ls)
-        echo $?
-        cd $NGLDIR/node.gl.ci/ngl-tools
-        echo $(ls)
-        echo $?
-        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env # 
-        echo $(ls)
-        echo $?
+            alias make="make -j8"
+            cd sxplayer
+            make install PREFIX=env
+            cd ..
+            cd libnodegl
+            PKG_CONFIG_PATH=$HOME/env/lib/pkgconfig make install PREFIX=$HOME/env
+            cd ngl-tools
+            PKG_CONFIG_PATH=$HOME/env/lib/pkgconfig make install PREFIX=$HOME/env
+
+            PKG_CONFIG_PATH=$HOME/env/lib/pkgconfig pip2 install --user -e ./pynodegl
+ 
+            pip2 install --user -r ./pynodegl-utils/requirements.txt
+            pip2 install --user -e ./pynodegl-utils
+
+            PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig pkg-config --modversion libnodegl 
