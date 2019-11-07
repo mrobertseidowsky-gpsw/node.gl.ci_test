@@ -26,11 +26,9 @@
 
 #include "android_surface.h"
 #include "format.h"
-#include "glincludes.h"
 #include "hwupload.h"
 #include "image.h"
 #include "log.h"
-#include "math_utils.h"
 #include "nodegl.h"
 #include "nodes.h"
 
