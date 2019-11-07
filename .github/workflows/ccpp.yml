@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install ubuntu libs
-      run: sudo apt-get install nasm wget pkg-config libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
+      run: sudo apt-get install mlocate nasm wget pkg-config libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
     - name: ffmpeg
       run: |
         echo "mrs -----FFMPEG"
@@ -22,12 +22,14 @@ jobs:
         echo "mrs -----FFMPEG END"
         make install 
         echo $?
-    - name: Create repo with my node.gl.ci repo and needed sxplayer
+        ls 
+        sudo updatedb
+    - name: Create repo with needed sxplayer
       run: |
         echo "mrs -----WHO AM I"
         lsb_release -a
-
-
+        echo "mrs -----LOCATE"
+        locate libavformat.pc
         echo "mrs -----LIST DIRECTORIES"
         ls  
         echo "mrs -----CLONE SXPLAYER"
