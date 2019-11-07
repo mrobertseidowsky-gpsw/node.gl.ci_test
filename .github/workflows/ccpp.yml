@@ -35,23 +35,19 @@ jobs:
         ls -al 
         git clone https://github.com/stupeflix/sxplayer 
 
-    - name: C packages
-      run: |
         alias make="make -j8"
         cd $NGLDIR/sxplayer
         make install PREFIX=$NGLDIR/env
         cd $HOME
         cd $NGLDIR/node.gl.ci/libnodegl
-
-
-    #     echo $(ls)
-    #     echo $?
-    #     PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env
-    #     echo $(ls)
-    #     echo $?
-    #     cd $NGLDIR/node.gl.ci/ngl-tools
-    #     echo $(ls)
-    #     echo $?
-    #     PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env # 
-    #     echo $(ls)
-    #     echo $?
+        echo $(ls)
+        echo $?
+        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env
+        echo $(ls)
+        echo $?
+        cd $NGLDIR/node.gl.ci/ngl-tools
+        echo $(ls)
+        echo $?
+        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env # 
+        echo $(ls)
+        echo $?
