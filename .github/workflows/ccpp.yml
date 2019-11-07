@@ -25,31 +25,25 @@ jobs:
         
         export PATH=$PATH:$HOME/.local/bin:$NGLDIR/env/bin
         echo "PATH:" $PATH
-
         mkdir -p $NGLDIR
         ls -al 
-
         mkdir $NGLDIR/node.gl.ci
         ls -al 
-
         mv .hiddendir/* $NGLDIR/node.gl.ci
         ls -al
-
         mkdir $NGLDIR/env
         ls -al 
-
         git clone https://github.com/stupeflix/sxplayer 
 
     - name: C packages
       run: |
         alias make="make -j8"
         cd $NGLDIR/sxplayer
-    
         make install PREFIX=$NGLDIR/env
-        echo $(ls)
-    #     echo $?
         cd $HOME
         cd $NGLDIR/node.gl.ci/libnodegl
+
+
     #     echo $(ls)
     #     echo $?
     #     PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env
