@@ -29,35 +29,35 @@ jobs:
         mkdir -p $NGLDIR
         ls -al 
 
-        mkdir -p $NGLDIR/node.gl.ci
+        mkdir $NGLDIR/node.gl.ci
         ls -al 
 
         mv .hiddendir/* $NGLDIR/node.gl.ci
         ls -al
 
-        mkdir -p $NGLDIR/env
+        mkdir $NGLDIR/env
         ls -al 
 
-        git clone https://github.com/stupeflix/sxplayer $NGLDIR/sxplayer
-        
+        git clone https://github.com/stupeflix/sxplayer 
+
     - name: C packages
       run: |
         alias make="make -j8"
         cd $NGLDIR/sxplayer
-        echo $(ls)
-        echo $?
+    
         make install PREFIX=$NGLDIR/env
         echo $(ls)
-        echo $?
+    #     echo $?
+        cd $HOME
         cd $NGLDIR/node.gl.ci/libnodegl
-        echo $(ls)
-        echo $?
-        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env
-        echo $(ls)
-        echo $?
-        cd $NGLDIR/node.gl.ci/ngl-tools
-        echo $(ls)
-        echo $?
-        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env # 
-        echo $(ls)
-        echo $?
+    #     echo $(ls)
+    #     echo $?
+    #     PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env
+    #     echo $(ls)
+    #     echo $?
+    #     cd $NGLDIR/node.gl.ci/ngl-tools
+    #     echo $(ls)
+    #     echo $?
+    #     PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env # 
+    #     echo $(ls)
+    #     echo $?
