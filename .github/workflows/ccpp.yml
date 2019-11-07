@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install ubuntu libs
-      run: sudo apt-get install libavfilter-dev  libavcodec-dev libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
+      run: sudo apt-get install pkg-config libavformat-dev libavutil-dev libavfilter-dev libavcodec-dev libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
     - name: Create repo with my node.gl.ci repo and needed sxplayer
       run: |
         echo "mrs -----LIST DIRECTORIES"
@@ -30,13 +30,21 @@ jobs:
         alias make="make -j8"
         echo "mrs -----GO INTO SXPLA"
         cd sxplayer
-        echo "mrs -----MALE INST"
+        echo "mrs -----MAKE INST"
         make install PREFIX=$NGLDIR/env
+        echo $?
+        echo "mrs -----MAKE END"
         echo "GO INTO LIBNODEGL"
         cd ../libnodegl
-        echo "mrs -----MALE INST2"
+        echo "mrs -----MAKE INST2"
         PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env
+        echo $?
+        echo "mrs -----MAKE END2"
         echo "mrs -----GO INTO NGLTOOLS"
         cd ../ngl-tools
-        echo "mrs -----MALE INST3"
+        echo "mrs -----MAKE INST3"
         PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env
+        echo $?
+        echo "mrs -----MAKE END3"
+
+
