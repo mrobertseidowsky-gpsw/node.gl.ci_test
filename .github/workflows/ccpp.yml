@@ -9,8 +9,8 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
-#    - name: Install ubuntu libs
-#      run: sudo apt-get install libavfilter-dev  libavcodec-dev libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
+    - name: Install ubuntu libs
+      run: sudo apt-get install libavfilter-dev  libavcodec-dev libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
     - name: Create repo with my node.gl.ci repo and needed sxplayer
       run: |
             export PATH=$PATH:.local/bin:$HOME/env/bin
