@@ -13,6 +13,8 @@ jobs:
       run: sudo apt-get install pkg-config libavformat-dev libavutil-dev libavfilter-dev libavcodec-dev libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
     - name: Create repo with my node.gl.ci repo and needed sxplayer
       run: |
+        echo "mrs -----WHERE AM I"
+        lsb_release
         echo "mrs -----LIST DIRECTORIES"
         ls  
         echo "mrs -----CLONE SXPLAYER"
