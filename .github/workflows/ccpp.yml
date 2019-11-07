@@ -43,7 +43,7 @@ jobs:
         echo "mrs -----GO INTO NGLTOOLS"
         cd ../ngl-tools
         echo "mrs -----MAKE INST3"
-        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env
+# PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env
         echo $?
         echo "mrs -----MAKE END3"
 
