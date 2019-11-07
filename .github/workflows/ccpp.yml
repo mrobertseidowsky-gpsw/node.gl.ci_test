@@ -10,11 +10,24 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install ubuntu libs
-      run: sudo apt-get install pkg-config libavformat-dev libavutil-dev libavfilter-dev libavcodec-dev libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
+      run: sudo apt-get install nasm wget pkg-config libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
+    - name: ffmpeg
+      run: |
+        echo "mrs -----FFMPEG"
+        wget https://ffmpeg.org/releases/ffmpeg-4.2.1.tar.bz2
+        tar -xf ffmpeg-4.2.1.tar.bz2
+        cd ffmpeg-4.2.1
+        ./configure --prefix=$HOME --disable-autodetect
+        make -j8
+        echo "mrs -----FFMPEG END"
+        make install 
+        echo $?
     - name: Create repo with my node.gl.ci repo and needed sxplayer
       run: |
-        echo "mrs -----WHERE AM I"
+        echo "mrs -----WHO AM I"
         lsb_release -a
+
+
         echo "mrs -----LIST DIRECTORIES"
         ls  
         echo "mrs -----CLONE SXPLAYER"
