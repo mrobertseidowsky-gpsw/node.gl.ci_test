@@ -70,5 +70,18 @@ jobs:
         echo "mrs -----MAKE END3"
 
 
-
-
+    - name: Python packages 
+      run: |
+        export NGLDIR=$HOME
+        echo "mrs -----UPDATE"
+        sudo apt update
+        echo "mrs -----PYTHONPIP"
+        sudo apt install python-pip
+        echo "mrs -----VERSION"
+        echo pip --version
+        echo "mrs -----pynodegl"
+        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig pip2 install --user -e ./pynodegl
+        pip2 install --user -r ./pynodegl-utils/requirements.txt
+        pip2 install --user -e ./pynodegl-utils
+        echo "mrs -----libnodegl"
+        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig pkg-config --modversion libnodegl  
