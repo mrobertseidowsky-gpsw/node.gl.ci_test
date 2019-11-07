@@ -15,31 +15,20 @@ jobs:
       run: |
         echo $HOME
         echo $(ls)
-        export NGLDIR=$HOME/ngl-build
-        echo $?
-        echo $NGLDIR
-        export PATH=$PATH:$HOME/.local/bin:$NGLDIR/env/bin
-        echo $?        
-        echo $PATH
-        mkdir -p $NGLDIR/env
+        git clone https://github.com/stupeflix/sxplayer 
         echo $?
         echo $(ls)
-        echo $NGLDIR
-        git clone https://github.com/stupeflix/sxplayer $NGLDIR/sxplayer
-        echo $?
-        git clone https://github.com/mrobertseidowsky-gpsw/node.gl.ci.git $NGLDIR/node.gl.ci   
-        echo $?
     - name: C packages
       run: |
         alias make="make -j8"
         echo $?
         echo $(ls)
-        echo $NGLDIR
-        cd $NGLDIR/sxplayer
+        cd sxplayer
         echo $?
         echo $(ls)
-        make install PREFIX=$NGLDIR/env
-        cd $NGLDIR/node.gl.ci/libnodegl
-        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env
-        cd $NGLDIR/node.gl.ci/ngl-tools
-        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env # => glfw3 was required
+        make install PREFIX=/tmp/env
+        cd libnodegl
+        PKG_CONFIG_PATH=/tmp/env/lib/pkgconfig make install PREFIX=/tmp/env
+        cd ngl-tools
+        PKG_CONFIG_PATH=/tmp/env/lib/pkgconfig make install PREFIX=/tmp/env
+        
