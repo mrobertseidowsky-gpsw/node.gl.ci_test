@@ -18,14 +18,14 @@ jobs:
         echo $?
         export NGLDIR=$HOME/ngl-build
         export PATH=$PATH:$HOME/.local/bin:$NGLDIR/env/bin
-        mkdir $NGLDIR
-        mkdir $NGLDIR/node.gl.ci
+        mkdir -p $NGLDIR
+        mkdir -p $NGLDIR/node.gl.ci
         echo $?
         echo $(ls)
         find . -maxdepth 1 | grep -v $NGLDIR/node.gl.ci | xargs -i mv {} $NGLDIR/node.gl.ci
         echo $?
         echo $(ls)
-        mkdir $NGLDIR/env
+        mkdir -p $NGLDIR/env
         echo $?
         echo $(ls)
         git clone https://github.com/stupeflix/sxplayer $NGLDIR/sxplayer
