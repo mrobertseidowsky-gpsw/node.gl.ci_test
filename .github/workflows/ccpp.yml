@@ -15,20 +15,39 @@ jobs:
       run: |
         echo $HOME
         echo $(ls)
-        git clone https://github.com/stupeflix/sxplayer 
         echo $?
+        export NGLDIR=$HOME/ngl-build
+        export PATH=$PATH:$HOME/.local/bin:$NGLDIR/env/bin
+        mkdir -p $NGLDIR/node.gl.ci
         echo $(ls)
+        echo $?
+        find . -maxdepth 1 | grep -v ngl-build | xargs -i mv {}  ngl-build
+        echo $(ls)
+        echo $?
+        mkdir -p $NGLDIR/env
+        echo $(ls)
+        echo $?
+        git clone https://github.com/stupeflix/sxplayer $NGLDIR/sxplayer
+        echo $(ls)
+        echo $?
     - name: C packages
       run: |
         alias make="make -j8"
-        echo $?
+        cd $NGLDIR/sxplayer
         echo $(ls)
-        cd sxplayer
         echo $?
+        make install PREFIX=$NGLDIR/env
         echo $(ls)
-        make install PREFIX=/tmp/env
-        cd libnodegl
-        PKG_CONFIG_PATH=/tmp/env/lib/pkgconfig make install PREFIX=/tmp/env
-        cd ngl-tools
-        PKG_CONFIG_PATH=/tmp/env/lib/pkgconfig make install PREFIX=/tmp/env
-        
+        echo $?
+        cd $NGLDIR/node.gl.ci/libnodegl
+        echo $(ls)
+        echo $?
+        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env
+        echo $(ls)
+        echo $?
+        cd $NGLDIR/node.gl.ci/ngl-tools
+        echo $(ls)
+        echo $?
+        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env # 
+        echo $(ls)
+        echo $?
