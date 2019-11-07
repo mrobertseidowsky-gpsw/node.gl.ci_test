@@ -1,0 +1,29 @@
+name: C/C++ CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-18.04
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install ubuntu libs
+      run: sudo apt-get install libavfilter-dev  libavcodec-dev libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
+    - name: Create repo with my node.gl.ci repo and needed sxplayer
+      run: |
+        export NGLDIR=$HOME/ngl-build
+        export PATH=$PATH:$HOME/.local/bin:$NGLDIR/env/bin
+        mkdir -p $NGLDIR/env
+        git clone https://github.com/stupeflix/sxplayer $NGLDIR/sxplayer
+        git clone https://github.com/mrobertseidowsky-gpsw/node.gl.ci.git $NGLDIR/node.gl.ci   
+    - name: C packages
+      run: |
+        alias make="make -j8"
+        cd $NGLDIR/sxplayer
+        make install PREFIX=$NGLDIR/env
+        cd $NGLDIR/node.gl.ci/libnodegl
+        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env
+        cd $NGLDIR/node.gl.ci/ngl-tools
+        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env # => glfw3 was required
