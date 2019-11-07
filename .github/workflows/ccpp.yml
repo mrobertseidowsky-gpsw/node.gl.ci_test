@@ -13,32 +13,30 @@ jobs:
       run: sudo apt-get install libavfilter-dev  libavcodec-dev libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
     - name: Create repo with my node.gl.ci repo and needed sxplayer
       run: |
-        echo "CREATION DE ENV"
-        mkdir env
-        echo "LIST DIRECTORIES"
+        echo "mrs -----LIST DIRECTORIES"
         ls  
-        echo "CLONE SXPLAYER"
+        echo "mrs -----CLONE SXPLAYER"
         git clone https://github.com/stupeflix/sxplayer sxplayer
-        echo "LIST DIRECTORIES"
+        echo "mrs -----LIST DIRECTORIES"
         ls
-        echo "DISPLAY VARIABLES"
+        echo "mrs -----DISPLAY VARIABLES"
         export NGLDIR=$HOME
         export PATH=$PATH:$HOME/.local/bin:$NGLDIR/env/bin
-        echo "NGLDIR:" $NGLDIR
-        echo "PATH:" $PATH
-        echo "MAKE ALIAS"
+        echo "mrs -----CREATION DE ENV"
+        mkdir $NGLDIR/env
+        echo "mrs -----NGLDIR:" $NGLDIR
+        echo "mrs -----PATH:" $PATH
+        echo "mrs -----MAKE ALIAS"
         alias make="make -j8"
-        echo "GO INTO SXPLA"
+        echo "mrs -----GO INTO SXPLA"
         cd sxplayer
-        echo "MALE INST"
+        echo "mrs -----MALE INST"
         make install PREFIX=$NGLDIR/env
-        echo "LOCATE"
-        locate sxplayer.h
         echo "GO INTO LIBNODEGL"
         cd ../libnodegl
-        echo "MALE INST2"
-        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env\n
-        echo "GO INTO NGLTOOLS"
+        echo "mrs -----MALE INST2"
+        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env
+        echo "mrs -----GO INTO NGLTOOLS"
         cd ../ngl-tools
-        echo "MALE INST3"
-        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env # => glfw3 was required\n
+        echo "mrs -----MALE INST3"
+        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env
