@@ -85,8 +85,13 @@ jobs:
         echo "mrs -----PYNODEGL"
         LDFLAGS=-Wl,-rpath,$NGLDIR/env PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig pip2 install --user -e ./pynodegl
         echo "mrs -----pynodegl2"
-        pip2 install --user -r ./pynodegl-utils/requirements.txt
+        pip2 install --user watchdog
         echo "mrs -----pynodegl3"
-        pip2 install --user -e ./pynodegl-utils
+        LDFLAGS=-Wl,-rpath,$NGLDIR/env PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig pip2 install --user -e ./pynodegl-utils
         echo "mrs -----libnodegl"
         PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig pkg-config --modversion libnodegl  
+
+    - name: Run tests
+      run: |
+        cd tests
+        make tests_api 
