@@ -13,7 +13,7 @@ jobs:
       run: sudo apt-get install mlocate nasm libx264-dev wget pkg-config libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
     - name: ffmpeg
       run: |
-        export PREFIX=$HOME/env
+        export PREFIX=/usr
         export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
         echo "mrs -----FFMPEG"
         wget -q https://ffmpeg.org/releases/ffmpeg-4.2.1.tar.bz2
@@ -30,9 +30,9 @@ jobs:
         --enable-muxer=mp4,matroska \
         --enable-encoder=libx264 \
         --enable-protocol='file,http' --enable-shared --disable-static --prefix=$PREFIX 
-        make -j8
+        sudo make -j8
         echo "mrs -----FFMPEG END"
-        make install 
+        sudo make install 
         sudo updatedb
         echo $?
         find $PREFIX
@@ -61,19 +61,19 @@ jobs:
         echo "mrs -----GO INTO SXPLA"
         cd sxplayer-9.5.0
         echo "mrs -----MAKE INST"
-        LDFLAGS=-Wl,-rpath,$PREFIX/lib make install PREFIX=$PREFIX SHARED=yes
+        sudo make install PREFIX=$PREFIX SHARED=yes
         echo $?
         echo "mrs -----MAKE END"
         echo "GO INTO LIBNODEGL"
         cd ../libnodegl
         echo "mrs -----MAKE INST2"
-        LDFLAGS=-Wl,-rpath,$PREFIX/lib make install PREFIX=$PREFIX SHARED=yes
+        sudo make install PREFIX=$PREFIX SHARED=yes
         echo $?
         echo "mrs -----MAKE END2"
         echo "mrs -----GO INTO NGLTOOLS"
         cd ../ngl-tools
         echo "mrs -----MAKE INST3"
-        LDFLAGS=-Wl,-rpath,$PREFIX/lib make install PREFIX=$PREFIX
+        sudo make install PREFIX=$PREFIX
         echo $?
         find $PREFIX
         echo "mrs -----MAKE END3"
@@ -91,11 +91,11 @@ jobs:
         echo "mrs -----VERSION"
         pip2 --version
         echo "mrs -----PYNODEGL"
-        LDFLAGS=-Wl,-rpath,$PREFIX/lib pip2 install --user -e ./pynodegl
+        sudo pip2 install --user -e ./pynodegl
         echo "mrs -----pynodegl2"
-        pip2 install --user -r ./pynodegl-utils/requirements.txt
+        sudo pip2 install --user -r ./pynodegl-utils/requirements.txt
         echo "mrs -----pynodegl3"
-        LDFLAGS=-Wl,-rpath,$PREFIX/lib pip2 install --user -e ./pynodegl-utils
+        sudo pip2 install --user -e ./pynodegl-utils
         echo "mrs -----libnodegl"
         pkg-config --modversion libnodegl  
 
@@ -105,5 +105,5 @@ jobs:
         cd tests
         ls 
         echo "mrs -----make tests_api "
-        make tests_api 
+        sudo make tests_api 
  
