@@ -1,14 +1,9 @@
 node.gl
 =======
 
-![](https://github.com/mrobertseidowsky-gpsw/node.gl.ci/workflows/.github/workflows/greetings.yml/badge.svg)
+ 
 
-![](https://github.com/mrobertseidowsky-gpsw/node.gl.ci/workflows/.github/workflows/greetings.yml/blank.svg)
-
-![](https://github.com/mrobertseidowsky-gpsw/node.gl.ci/workflows/.github/workflows/greetings.yml/label.svg)
-
-
-![](https://github.com/mrobertseidowsky-gpsw/node.gl.ci/workflows/.github/workflows/greetings.yml/label.svg?branch=cboesch/bug)
+![GitHub Actions status | mrobertseidowsky-gpsw/node.gl.ci](https://github.com/mrobertseidowsky-gpsw/node.gl.ci/.github/workflows/blank.yml/badge.svg)
 
 
 
