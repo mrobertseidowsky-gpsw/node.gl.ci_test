@@ -13,6 +13,8 @@ jobs:
       run: sudo apt-get install mlocate nasm wget pkg-config libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
     - name: ffmpeg
       run: |
+        export PREFIX=$HOME/env
+        export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
         echo "mrs -----FFMPEG"
         wget https://ffmpeg.org/releases/ffmpeg-4.2.1.tar.bz2
         tar -xf ffmpeg-4.2.1.tar.bz2
@@ -25,15 +27,17 @@ jobs:
         --enable-demuxer='aac,image_jpeg_pipe,image_pgm_pipe,image_png_pipe,rawvideo,mp3,mp4,mov,wav,flac,matroska,mpegts' \
         --enable-decoder='mjpeg,png,rawvideo,mp3,pcm_s16le,pcm_s16be,mpeg4,aac,pgm,flac,webp,wmv1,wmv2,wmv3,h264' \
         --enable-parser='mjpeg,png,h264,aac,flac' \
-        --enable-protocol='file,http' --enable-shared --disable-static --prefix=$HOME 
+        --enable-protocol='file,http' --enable-shared --disable-static --prefix=$PREFIX 
         make -j8
         echo "mrs -----FFMPEG END"
         sudo make install 
         sudo updatedb
         echo $?
-        ls 
+        find $PREFIX
     - name: Build sxplayer ngl-tools libnodegl 
       run: |
+        export PREFIX=$HOME/env
+        export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
         echo "mrs -----WHO AM I"
         lsb_release -a 
         echo "mrs -----LIST DIRECTORIES"
@@ -44,7 +48,7 @@ jobs:
         ls
         echo "mrs -----DISPLAY VARIABLES"
         export NGLDIR=$HOME
-        export PATH=$PATH:$HOME/.local/bin:$NGLDIR/env/bin
+        export PATH=$PATH:$HOME/.local/bin:$PREFIX/bin
         echo "mrs -----CREATION DE ENV"
         mkdir $NGLDIR/env
         echo "mrs -----NGLDIR:" $NGLDIR
@@ -54,25 +58,28 @@ jobs:
         echo "mrs -----GO INTO SXPLA"
         cd sxplayer
         echo "mrs -----MAKE INST"
-        LDFLAGS=-Wl,-rpath,$NGLDIR/env PKG_CONFIG_PATH=$NGLDIR/lib/pkgconfig make install PREFIX=$NGLDIR/env SHARED=yes
+        LDFLAGS=-Wl,-rpath,$PREFIX/lib make install PREFIX=$PREFIX SHARED=yes
         echo $?
         echo "mrs -----MAKE END"
         echo "GO INTO LIBNODEGL"
         cd ../libnodegl
         echo "mrs -----MAKE INST2"
-        LDFLAGS=-Wl,-rpath,$NGLDIR/env PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env SHARED=yes
+        LDFLAGS=-Wl,-rpath,$PREFIX/lib make install PREFIX=$PREFIX SHARED=yes
         echo $?
         echo "mrs -----MAKE END2"
         echo "mrs -----GO INTO NGLTOOLS"
         cd ../ngl-tools
         echo "mrs -----MAKE INST3"
-        LDFLAGS=-Wl,-rpath,$HOME/lib PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env SHARED=yes
+        LDFLAGS=-Wl,-rpath,$PREFIX/lib make install PREFIX=$PREFIX
         echo $?
+        find $PREFIX
         echo "mrs -----MAKE END3"
 
 
     - name: Python packages 
       run: |
+        export PREFIX=$HOME/env
+        export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
         export NGLDIR=$HOME
         echo "mrs -----UPDATE"
         sudo apt-get update
@@ -81,16 +88,16 @@ jobs:
         echo "mrs -----VERSION"
         pip --version
         echo "mrs -----PYNODEGL"
-        LDFLAGS=-Wl,-rpath,$NGLDIR/env PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig pip2 install --user -e ./pynodegl
+        LDFLAGS=-Wl,-rpath,$PREFIX/lib pip2 install --user -e ./pynodegl
         echo "mrs -----pynodegl2"
         pip2 install --user -r ./pynodegl-utils/requirements.txt
         echo "mrs -----pynodegl3"
-        LDFLAGS=-Wl,-rpath,$NGLDIR/env PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig pip2 install --user -e ./pynodegl-utils
+        LDFLAGS=-Wl,-rpath,$PREFIX/lib pip2 install --user -e ./pynodegl-utils
         echo "mrs -----libnodegl"
-        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig pkg-config --modversion libnodegl  
+        pkg-config --modversion libnodegl  
 
     - name: Run tests
       run: |
         cd tests
         locate libnodegl.so
-        LDFLAGS=-Wl,-rpath,$NGLDIR/env PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make tests_api 
+        make tests_api 
