@@ -4,7 +4,9 @@ node.gl
  
 
 ![GitHub Actions status | mrobertseidowsky-gpsw/node.gl.ci](https://github.com/mrobertseidowsky-gpsw/node.gl.ci/.github/workflows/blank.yml/badge.svg)
+ 
 
+![GitHub Actions status | mrobertseidowsky-gpsw/node.gl.ci](https://github.com/mrobertseidowsky-gpsw/node.gl.ci/workflows/.github/workflows/blank.yml/badge.svg)
 
 
 `node.gl` is a [GoPro][gopro] OpenGL engine for building and rendering
