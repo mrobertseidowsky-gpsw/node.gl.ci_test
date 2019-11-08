@@ -25,7 +25,7 @@ jobs:
         --enable-demuxer='aac,image_jpeg_pipe,image_pgm_pipe,image_png_pipe,rawvideo,mp3,mp4,mov,wav,flac,matroska,mpegts' \
         --enable-decoder='mjpeg,png,rawvideo,mp3,pcm_s16le,pcm_s16be,mpeg4,aac,pgm,flac,h264' \
         --enable-parser='mjpeg,png,h264,aac,flac' \
-        --enable-protocol='file,http'--prefix=$HOME
+        --enable-protocol='file,http'--disable-file --without-pic --disable-shared --prefix=$HOME
         make -j8
         echo "mrs -----FFMPEG END"
         sudo make install 
@@ -80,7 +80,7 @@ jobs:
         echo "mrs -----VERSION"
         pip --version
         echo "mrs -----PYNODEGL"
-        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig pip install --user -e ./pynodegl
+        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig pip2 install --user -e ./pynodegl
         echo "mrs -----pynodegl2"
         pip2 install --user -r ./pynodegl-utils/requirements.txt
         echo "mrs -----pynodegl3"
