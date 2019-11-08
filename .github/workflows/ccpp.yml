@@ -43,14 +43,16 @@ jobs:
         echo "mrs -----LIST DIRECTORIES"
         ls  
         echo "mrs -----CLONE SXPLAYER"
-        git clone https://github.com/stupeflix/sxplayer sxplayer
+        wget https://github.com/Stupeflix/sxplayer/archive/v9.5.0.tar.gz -O sxplayer.tar.gz
+        tar -xf sxplayer.tar.gz
+        cd sxplayer-9.5.0
         echo "mrs -----LIST DIRECTORIES"
         ls
         echo "mrs -----DISPLAY VARIABLES"
         export NGLDIR=$HOME
         export PATH=$PATH:$HOME/.local/bin:$PREFIX/bin
         echo "mrs -----CREATION DE ENV"
-        mkdir $NGLDIR/env
+        mkdir -p $NGLDIR/env
         echo "mrs -----NGLDIR:" $NGLDIR
         echo "mrs -----PATH:" $PATH
         echo "mrs -----MAKE ALIAS"
