@@ -30,7 +30,7 @@ jobs:
         --enable-protocol='file,http' --enable-shared --disable-static --prefix=$PREFIX 
         make -j8
         echo "mrs -----FFMPEG END"
-        sudo make install 
+        make install 
         sudo updatedb
         echo $?
         find $PREFIX
@@ -59,19 +59,19 @@ jobs:
         echo "mrs -----GO INTO SXPLA"
         cd sxplayer-9.5.0
         echo "mrs -----MAKE INST"
-        LDFLAGS=-Wl,-rpath,$PREFIX/lib sudo make install PREFIX=$PREFIX SHARED=yes
+        LDFLAGS=-Wl,-rpath,$PREFIX/lib make install PREFIX=$PREFIX SHARED=yes
         echo $?
         echo "mrs -----MAKE END"
         echo "GO INTO LIBNODEGL"
         cd ../libnodegl
         echo "mrs -----MAKE INST2"
-        LDFLAGS=-Wl,-rpath,$PREFIX/lib sudo make install PREFIX=$PREFIX SHARED=yes
+        LDFLAGS=-Wl,-rpath,$PREFIX/lib make install PREFIX=$PREFIX SHARED=yes
         echo $?
         echo "mrs -----MAKE END2"
         echo "mrs -----GO INTO NGLTOOLS"
         cd ../ngl-tools
         echo "mrs -----MAKE INST3"
-        LDFLAGS=-Wl,-rpath,$PREFIX/lib sudo make install PREFIX=$PREFIX
+        LDFLAGS=-Wl,-rpath,$PREFIX/lib make install PREFIX=$PREFIX
         echo $?
         find $PREFIX
         echo "mrs -----MAKE END3"
@@ -101,4 +101,4 @@ jobs:
       run: |
         cd tests
         locate libnodegl.so
-        sudo make tests_api 
+        make tests_api 
