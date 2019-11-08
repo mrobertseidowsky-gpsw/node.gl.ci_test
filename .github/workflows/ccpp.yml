@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install ubuntu libs
-      run: sudo apt-get install mlocate nasm wget pkg-config libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
+      run: sudo apt-get install nasm wget pkg-config libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
     - name: ffmpeg
       run: |
         echo "mrs -----FFMPEG"
@@ -25,11 +25,10 @@ jobs:
         --enable-demuxer='aac,image_jpeg_pipe,image_pgm_pipe,image_png_pipe,rawvideo,mp3,mp4,mov,wav,flac,matroska,mpegts' \
         --enable-decoder='mjpeg,png,rawvideo,mp3,pcm_s16le,pcm_s16be,mpeg4,aac,pgm,flac,webp,wmv1,wmv2,wmv3,h264' \
         --enable-parser='mjpeg,png,h264,aac,flac' \
-        --enable-protocol='file,http' --enable-shared --prefix=$HOME 
+        --enable-protocol='file,http' --enable-shared --disable-static --prefix=$HOME 
         make -j8
         echo "mrs -----FFMPEG END"
         sudo make install 
-        sudo updatedb
         echo $?
         ls 
     - name: Build sxplayer ngl-tools libnodegl 
@@ -65,8 +64,6 @@ jobs:
         echo "mrs -----MAKE END2"
         echo "mrs -----GO INTO NGLTOOLS"
         cd ../ngl-tools
-        echo "mrs -----LOCATE libavutil"
-        locate libavutil.so
         echo "mrs -----MAKE INST3"
         LDFLAGS=-Wl,-rpath,$HOME/lib PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env SHARED=yes
         echo $?
@@ -85,7 +82,7 @@ jobs:
         echo "mrs -----PYNODEGL"
         LDFLAGS=-Wl,-rpath,$NGLDIR/env PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig pip2 install --user -e ./pynodegl
         echo "mrs -----pynodegl2"
-        pip2 install --user watchdog
+        pip2 install --user -r ./pynodegl-utils/requirements.txt
         echo "mrs -----pynodegl3"
         LDFLAGS=-Wl,-rpath,$NGLDIR/env PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig pip2 install --user -e ./pynodegl-utils
         echo "mrs -----libnodegl"
