@@ -54,13 +54,13 @@ jobs:
         echo "mrs -----GO INTO SXPLA"
         cd sxplayer
         echo "mrs -----MAKE INST"
-        LDFLAGS=-Wl,-rpath,$NGLDIR PKG_CONFIG_PATH=$NGLDIR/lib/pkgconfig make install PREFIX=$NGLDIR/env SHARED=yes
+        LDFLAGS=-Wl,-rpath,$NGLDIR/env PKG_CONFIG_PATH=$NGLDIR/lib/pkgconfig make install PREFIX=$NGLDIR/env SHARED=yes
         echo $?
         echo "mrs -----MAKE END"
         echo "GO INTO LIBNODEGL"
         cd ../libnodegl
         echo "mrs -----MAKE INST2"
-        LDFLAGS=-Wl,-rpath,$NGLDIR PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env SHARED=yes
+        LDFLAGS=-Wl,-rpath,$NGLDIR/env PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env SHARED=yes
         echo $?
         echo "mrs -----MAKE END2"
         echo "mrs -----GO INTO NGLTOOLS"
@@ -68,7 +68,7 @@ jobs:
         echo "mrs -----LOCATE libavutil"
         locate libavutil.so
         echo "mrs -----MAKE INST3"
-        LDFLAGS=-Wl,-rpath,$NGLDIR PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env SHARED=yes
+        LDFLAGS=-Wl,-rpath,$HOME/lib PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make install PREFIX=$NGLDIR/env SHARED=yes
         echo $?
         echo "mrs -----MAKE END3"
 
