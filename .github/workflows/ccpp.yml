@@ -75,7 +75,8 @@ jobs:
         echo $?
         find $PREFIX
         echo "mrs -----MAKE END3"
-
+        cd ..
+        ls
 
     - name: Python packages 
       run: |
@@ -99,6 +100,9 @@ jobs:
 
     - name: Run tests
       run: |
+        echo "mrs -----GO INTO TESTS"
         cd tests
+        echo "mrs -----locate libnodegl.so"
         locate libnodegl.so
+        echo "mrs -----make tests_api "
         make tests_api 
