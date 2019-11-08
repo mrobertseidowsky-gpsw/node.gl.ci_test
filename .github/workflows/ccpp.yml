@@ -16,7 +16,7 @@ jobs:
         export PREFIX=$HOME/env
         export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
         echo "mrs -----FFMPEG"
-        wget https://ffmpeg.org/releases/ffmpeg-4.2.1.tar.bz2
+        wget -q https://ffmpeg.org/releases/ffmpeg-4.2.1.tar.bz2
         tar -xf ffmpeg-4.2.1.tar.bz2
         cd ffmpeg-4.2.1
         ./configure --enable-debug --disable-stripping --disable-doc \
@@ -43,9 +43,8 @@ jobs:
         echo "mrs -----LIST DIRECTORIES"
         ls  
         echo "mrs -----CLONE SXPLAYER"
-        wget https://github.com/Stupeflix/sxplayer/archive/v9.5.0.tar.gz -O sxplayer.tar.gz
+        wget -q https://github.com/Stupeflix/sxplayer/archive/v9.5.0.tar.gz -O sxplayer.tar.gz
         tar -xf sxplayer.tar.gz
-        cd sxplayer-9.5.0
         echo "mrs -----LIST DIRECTORIES"
         ls
         echo "mrs -----DISPLAY VARIABLES"
@@ -58,7 +57,7 @@ jobs:
         echo "mrs -----MAKE ALIAS"
         alias make="make -j8"
         echo "mrs -----GO INTO SXPLA"
-        cd sxplayer
+        cd sxplayer-9.5.0
         echo "mrs -----MAKE INST"
         LDFLAGS=-Wl,-rpath,$PREFIX/lib make install PREFIX=$PREFIX SHARED=yes
         echo $?
