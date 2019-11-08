@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install ubuntu libs
-      run: sudo apt-get install mlocate nasm wget pkg-config libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
+      run: sudo apt-get install mlocate nasm libx264-dev wget pkg-config libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
     - name: ffmpeg
       run: |
         export PREFIX=$HOME/env
@@ -22,11 +22,13 @@ jobs:
         ./configure --enable-debug --disable-stripping --disable-doc \
         --disable-autodetect --enable-zlib --disable-everything \
         --enable-filter='aformat,aresample,asetnsamples,asettb,copy,format,fps,hflip,settb,scale,transpose,vflip' \
-        --disable-programs --enable-avdevice --enable-swresample \
+        --disable-programs --enable-avdevice --enable-swscale --enable-swresample \
         --enable-bsf='aac_adtstoasc,h264_mp4toannexb' \
         --enable-demuxer='aac,image_jpeg_pipe,image_pgm_pipe,image_png_pipe,rawvideo,mp3,mp4,mov,wav,flac,matroska,mpegts' \
         --enable-decoder='mjpeg,png,rawvideo,mp3,pcm_s16le,pcm_s16be,mpeg4,aac,pgm,flac,webp,wmv1,wmv2,wmv3,h264' \
         --enable-parser='mjpeg,png,h264,aac,flac' \
+        --enable-muxer=mp4,matroska \
+        --enable-encoder=libx264 \
         --enable-protocol='file,http' --enable-shared --disable-static --prefix=$PREFIX 
         make -j8
         echo "mrs -----FFMPEG END"
