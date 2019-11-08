@@ -23,9 +23,9 @@ jobs:
         --disable-programs --enable-avdevice --enable-swresample \
         --enable-bsf='aac_adtstoasc,h264_mp4toannexb' \
         --enable-demuxer='aac,image_jpeg_pipe,image_pgm_pipe,image_png_pipe,rawvideo,mp3,mp4,mov,wav,flac,matroska,mpegts' \
-        --enable-decoder='h264_mediacodec,hevc_mediacodec,mpeg4_mediacodec, mjpeg,png,rawvideo,mp3,pcm_s16le,pcm_s16be,mpeg4,aac,pgm,flac,vp8_mediacodec,vp9_mediacodec,webp,wmv1,wmv2,wmv3,aac_mediacodec,mp3_mediacodec, h264' \
+        --enable-decoder='mjpeg,png,rawvideo,mp3,pcm_s16le,pcm_s16be,mpeg4,aac,pgm,flac,webp,wmv1,wmv2,wmv3,h264' \
         --enable-parser='mjpeg,png,h264,aac,flac' \
-        --enable-protocol='file,http' --enable-mediacodec --prefix=$HOME
+        --enable-protocol='file,http' --prefix=$HOME
         make -j8
         echo "mrs -----FFMPEG END"
         sudo make install 
