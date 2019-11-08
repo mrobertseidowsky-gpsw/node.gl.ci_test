@@ -7,10 +7,14 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
-    
+    runs-on: ubuntu-18.04
+    strategy:
+        matrix:
+            node: [6, 8, 10]
     steps:
     - uses: actions/checkout@v1
+        with:
+            node-version: ${{ matrix.node }}
     - name: Install ubuntu libs
       run: sudo apt-get install mlocate nasm libx264-dev wget pkg-config libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
     - name: ffmpeg
