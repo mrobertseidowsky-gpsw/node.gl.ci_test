@@ -74,14 +74,16 @@ jobs:
       run: |
         export NGLDIR=$HOME
         echo "mrs -----UPDATE"
-        sudo apt update
+        sudo apt-get update
         echo "mrs -----PYTHONPIP"
-        sudo apt install python-pip
+        sudo apt-get install python-pip
         echo "mrs -----VERSION"
-        echo pip --version
-        echo "mrs -----pynodegl"
-        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig pip2 install --user -e ./pynodegl
+        pip --version
+        echo "mrs -----PYNODEGL"
+        PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig pip install --user -e ./pynodegl
+        echo "mrs -----pynodegl2"
         pip2 install --user -r ./pynodegl-utils/requirements.txt
+        echo "mrs -----pynodegl3"
         pip2 install --user -e ./pynodegl-utils
         echo "mrs -----libnodegl"
         PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig pkg-config --modversion libnodegl  
