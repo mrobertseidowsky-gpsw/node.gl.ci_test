@@ -48,11 +48,11 @@ jobs:
         echo "mrs -----LIST DIRECTORIES"
         ls
         echo "mrs -----DISPLAY VARIABLES"
-        export NGLDIR=$HOME
+        
         export PATH=$PATH:$HOME/.local/bin:$PREFIX/bin
         echo "mrs -----CREATION DE ENV"
-        mkdir -p $NGLDIR/env
-        echo "mrs -----NGLDIR:" $NGLDIR
+        
+        
         echo "mrs -----PATH:" $PATH
         echo "mrs -----MAKE ALIAS"
         alias make="make -j8"
@@ -82,13 +82,12 @@ jobs:
       run: |
         export PREFIX=$HOME/env
         export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
-        export NGLDIR=$HOME
         echo "mrs -----UPDATE"
         sudo apt-get update
         echo "mrs -----PYTHONPIP"
         sudo apt-get install python-pip
         echo "mrs -----VERSION"
-        pip --version
+        pip2 --version
         echo "mrs -----PYNODEGL"
         LDFLAGS=-Wl,-rpath,$PREFIX/lib pip2 install --user -e ./pynodegl
         echo "mrs -----pynodegl2"
@@ -100,11 +99,9 @@ jobs:
 
     - name: Run tests
       run: |
-        export PREFIX=$HOME/env
-        export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
         echo "mrs -----GO INTO TESTS"
         cd tests
         ls 
         echo "mrs -----make tests_api "
-        LDFLAGS=-Wl,-rpath,$PREFIX/lib make tests_api 
+        make tests_api 
  
