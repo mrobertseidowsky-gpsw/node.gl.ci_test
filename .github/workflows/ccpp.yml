@@ -102,7 +102,6 @@ jobs:
       run: |
         echo "mrs -----GO INTO TESTS"
         cd tests
-        echo "mrs -----locate libnodegl.so"
-        locate libnodegl.so
+        ls 
         echo "mrs -----make tests_api "
         make tests_api 
