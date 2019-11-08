@@ -100,8 +100,11 @@ jobs:
 
     - name: Run tests
       run: |
+        export PREFIX=$HOME/env
+        export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
         echo "mrs -----GO INTO TESTS"
         cd tests
         ls 
         echo "mrs -----make tests_api "
-        make tests_api 
+        LDFLAGS=-Wl,-rpath,$PREFIX/lib make tests_api 
+ 
