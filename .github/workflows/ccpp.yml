@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install ubuntu libs
-      run: sudo apt-get install nasm wget pkg-config libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
+      run: sudo apt-get install mlocate nasm wget pkg-config libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
     - name: ffmpeg
       run: |
         echo "mrs -----FFMPEG"
@@ -29,6 +29,7 @@ jobs:
         make -j8
         echo "mrs -----FFMPEG END"
         sudo make install 
+        sudo updatedb
         echo $?
         ls 
     - name: Build sxplayer ngl-tools libnodegl 
@@ -91,4 +92,5 @@ jobs:
     - name: Run tests
       run: |
         cd tests
-        make tests_api 
+        locate libnodegl.so
+        LDFLAGS=-Wl,-rpath,$NGLDIR/env PKG_CONFIG_PATH=$NGLDIR/env/lib/pkgconfig make tests_api 
