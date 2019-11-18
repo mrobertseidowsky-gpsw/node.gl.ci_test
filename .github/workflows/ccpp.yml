@@ -1,11 +1,17 @@
-name: C/C++ CI
+name: Continuous Integration Pipeline 
+descriptiopn: blabla
+author: Clément Boesch, Matthieu Bouron
+
+branding:
+  icon: 'smile'
+  color: 'black'
 
 on:
   push:
     branches:    
       - master # Push events on master branch     
 jobs:
-  build:
+  build_libs:
 
     runs-on: ubuntu-18.04
     steps:
@@ -100,6 +106,9 @@ jobs:
         echo "mrs -----libnodegl"
         pkg-config --modversion libnodegl  
 
+
+  tests:
+    needs: build_libs 
     - name: Run tests
       run: |
         echo "mrs -----GO INTO TESTS"
