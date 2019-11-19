@@ -1,10 +1,4 @@
 name: 'Continuous Integration Pipeline' 
-#description: 'Setup the CI on node gl'
-#author: 'Clement Boesch, Matthieu Bouron'
-
-#branding:
- # icon: 'smile'
- # color: 'black'
 
 on:
   push:
@@ -20,6 +14,12 @@ jobs:
   build_libs:
 
     runs-on: ubuntu-18.04
+    description: 'Setup the CI on node gl'
+    author: 'Clement Boesch, Matthieu Bouron'
+    branding:
+      icon: 'smile'
+      color: 'black'
+
     steps:
     - uses: actions/checkout@v1
     - name: Install ubuntu libs
@@ -112,14 +112,7 @@ jobs:
         echo "mrs -----libnodegl"
         pkg-config --modversion libnodegl  
 
-
-  tests:
-    runs-on: ubuntu-18.04
-    # build_libs job must complete successfully before tests job begins
-    needs: build_libs
-    steps:
-    - uses: actions/checkout@v2
-    - name: Run tests
+    - name: Run tests_api
       run: |
         echo "mrs -----GO INTO TESTS"
         cd tests
