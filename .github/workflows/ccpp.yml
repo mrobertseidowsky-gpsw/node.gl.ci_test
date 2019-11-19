@@ -2,9 +2,9 @@ name: 'Continuous Integration Pipeline'
 #description: 'Setup the CI on node gl'
 #author: 'Clement Boesch, Matthieu Bouron'
 
-branding:
-  icon: 'smile'
-  color: 'black'
+#branding:
+ # icon: 'smile'
+ # color: 'black'
 
 on:
   push:
