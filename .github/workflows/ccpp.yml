@@ -9,7 +9,13 @@ branding:
 on:
   push:
     branches:    
-      - master # Push events on master branch     
+      - master # Push events on master branch   
+  pull_request: 
+    branches:    
+      - master # Push events on master branch   
+  schedule:
+     - cron:  '0 0 * * *' # Every day at midnight.
+   
 jobs:
   build_libs:
 
@@ -108,7 +114,8 @@ jobs:
 
 
   tests:
-    needs: build_libs 
+    # build_libs job must complete successfully before tests job begins
+    - needs: build_libs 
     - name: Run tests
       run: |
         echo "mrs -----GO INTO TESTS"
