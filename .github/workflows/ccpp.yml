@@ -1,6 +1,6 @@
-name: Continuous Integration Pipeline 
-description: blabla
-author: Clément Boesch, Matthieu Bouron
+name: 'Continuous Integration Pipeline' 
+description: 'Setup the CI on node gl'
+author: 'Clement Boesch, Matthieu Bouron'
 
 branding:
   icon: 'smile'
