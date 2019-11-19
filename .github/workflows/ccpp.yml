@@ -114,8 +114,11 @@ jobs:
 
 
   tests:
+    runs-on: ubuntu-18.04
     # build_libs job must complete successfully before tests job begins
-    - needs: build_libs 
+    needs: build_libs
+    steps:
+    - uses: actions/checkout@v2
     - name: Run tests
       run: |
         echo "mrs -----GO INTO TESTS"
