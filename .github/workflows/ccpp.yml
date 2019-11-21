@@ -25,7 +25,7 @@ jobs:
     - uses: actions/checkout@v1
       env:
         PREFIX: '/usr'
-        PKG_CONFIG_PATH : '/usr/lib/pkgconfig'
+        PKG_CONFIG_PATH: '/usr/lib/pkgconfig'
     - name: Install ubuntu libs
       run: sudo apt-get install mlocate nasm libx264-dev wget pkg-config libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
     - name: ffmpeg
