@@ -23,11 +23,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - env:
+        export PREFIX=/usr
     - name: Install ubuntu libs
       run: sudo apt-get install mlocate nasm libx264-dev wget pkg-config libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
     - name: ffmpeg
       run: |
-        export PREFIX=/usr
         export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
         echo "mrs -----FFMPEG"
         wget -q https://ffmpeg.org/releases/ffmpeg-4.2.1.tar.bz2
@@ -52,7 +53,6 @@ jobs:
         find $PREFIX
     - name: Build sxplayer ngl-tools libnodegl 
       run: |
-        export PREFIX=/usr
         export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
         echo "mrs -----WHO AM I"
         lsb_release -a 
@@ -96,7 +96,6 @@ jobs:
 
     - name: Python packages 
       run: |
-        export PREFIX=/usr
         export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
         echo "mrs -----UPDATE"
         sudo apt-get update
