@@ -23,7 +23,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - env:
+      env:
         PREFIX: '/usr'
     - name: Install ubuntu libs
       run: sudo apt-get install mlocate nasm libx264-dev wget pkg-config libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
