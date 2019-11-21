@@ -1,20 +1,20 @@
-name: 'Continuous Integration Pipeline' 
+name: 'Continuous Integration Pipeline'
 
 on:
   push:
     branches:    
-      - master # Push events on master branch 
+      - 'master' # Push events on master branch
       - 'cboesch' # Push events to branches matching refs/heads/cboesch
       - 'mbouron' # Push events to branches matching refs/heads/mbouron
-      - 'releases/**'  # Push events to branches matching refs/heads/releases/1**
+      - 'releases/*'  # Push events to branches matching refs/heads/releases/*
   pull_request: 
     branches:    
-      - master # Pull request events on master branch   
+      - 'master' # Pull request events on master branch
       - 'cboesch' # Pull request events to branches matching refs/heads/cboesch
       - 'mbouron' # Pull request events to branches matching refs/heads/mbouron
-      - 'releases/**'  # Pull request events to branches matching refs/heads/releases/1**
+      - 'releases/*'  # Pull request events to branches matching refs/heads/releases/*
   schedule:
-     - cron:  '0 0 * * *' # Every day at midnight.
+     - cron:  '0 0 * * *' # Every day at midnight
    
 jobs:
   build_libs:
