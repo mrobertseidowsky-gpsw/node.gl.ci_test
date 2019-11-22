@@ -112,11 +112,11 @@ jobs:
         echo "mrs -----libnodegl"
         pkg-config --modversion libnodegl  
 
-    - name: Run tests_api
-      run: |
-        echo "mrs -----GO INTO TESTS"
-        cd tests
-        ls 
-        echo "mrs -----make tests_api "
-        sudo make tests_api 
+    # - name: Run tests_api
+    #   run: |
+    #     echo "mrs -----GO INTO TESTS"
+    #     cd tests
+    #     ls 
+    #     echo "mrs -----make tests_api "
+    #     sudo make tests_api 
  
