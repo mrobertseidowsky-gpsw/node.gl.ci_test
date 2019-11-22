@@ -23,15 +23,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-      env:
-        PREFIX: '/usr'
-        PKG_CONFIG_PATH: '/usr/lib/pkgconfig'
     - name: Install ubuntu libs
-      run: sudo apt-get install mlocate nasm libx264-dev wget pkg-config libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
+      run: sudo apt-get install nasm libx264-dev wget pkg-config libglfw3-dev cython python-pyqt5 python-pyqt5.qtsvg
     - name: ffmpeg
       run: |
-        export $(PREFIX)
-        export $(PKG_CONFIG_PATH)
+        export PREFIX=/usr
+        export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
         echo "mrs -----FFMPEG"
         wget -q https://ffmpeg.org/releases/ffmpeg-4.2.1.tar.bz2
         tar -xf ffmpeg-4.2.1.tar.bz2
@@ -46,17 +43,16 @@ jobs:
         --enable-parser='mjpeg,png,h264,aac,flac' \
         --enable-muxer=mp4,matroska \
         --enable-encoder=libx264 \
-        --enable-protocol='file,http' --enable-shared --disable-static --prefix=$PREFIX 
+        --enable-protocol='file,http' --enable-shared --disable-static --prefix=$PREFIX
         sudo make -j8
         echo "mrs -----FFMPEG END"
         sudo make install 
-        sudo updatedb
         echo $?
         find $PREFIX
     - name: Build sxplayer ngl-tools libnodegl 
       run: |
-        export $(PREFIX)
-        export $(PKG_CONFIG_PATH)
+        export PREFIX=/usr
+        export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
         echo "mrs -----WHO AM I"
         lsb_release -a 
         echo "mrs -----LIST DIRECTORIES"
@@ -99,8 +95,8 @@ jobs:
 
     - name: Python packages 
       run: |
-        export $(PREFIX)
-        export $(PKG_CONFIG_PATH)
+        export PREFIX=/usr
+        export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
         echo "mrs -----UPDATE"
         sudo apt-get update
         echo "mrs -----PYTHONPIP"
