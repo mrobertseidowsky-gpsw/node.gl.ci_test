@@ -46,13 +46,13 @@ jobs:
         --enable-parser='mjpeg,png,h264,aac,flac' \
         --enable-muxer=mp4,matroska \
         --enable-encoder=libx264 \
-        --enable-protocol='file,http' --enable-shared --disable-static --prefix=$PREFIX 
+        --enable-protocol='file,http' --enable-shared --disable-static --prefix=$(PREFIX)
         sudo make -j8
         echo "mrs -----FFMPEG END"
         sudo make install 
         sudo updatedb
         echo $?
-        find $PREFIX
+        find $(PREFIX)
     - name: Build sxplayer ngl-tools libnodegl 
       run: |
         export $(PREFIX)
@@ -68,7 +68,7 @@ jobs:
         ls
         echo "mrs -----DISPLAY VARIABLES"
         
-        export PATH=$PATH:$HOME/.local/bin:$PREFIX/bin
+        export PATH=$PATH:$HOME/.local/bin:$(PREFIX)/bin
         echo "mrs -----CREATION DE ENV"
         
         
@@ -78,21 +78,21 @@ jobs:
         echo "mrs -----GO INTO SXPLA"
         cd sxplayer-9.5.0
         echo "mrs -----MAKE INST"
-        sudo make install PREFIX=$PREFIX SHARED=yes
+        sudo make install PREFIX=$(PREFIX) SHARED=yes
         echo $?
         echo "mrs -----MAKE END"
         echo "GO INTO LIBNODEGL"
         cd ../libnodegl
         echo "mrs -----MAKE INST2"
-        sudo make install PREFIX=$PREFIX SHARED=yes
+        sudo make install PREFIX=$(PREFIX) SHARED=yes
         echo $?
         echo "mrs -----MAKE END2"
         echo "mrs -----GO INTO NGLTOOLS"
         cd ../ngl-tools
         echo "mrs -----MAKE INST3"
-        sudo make install PREFIX=$PREFIX
+        sudo make install PREFIX=$(PREFIX)
         echo $?
-        find $PREFIX
+        find $(PREFIX)
         echo "mrs -----MAKE END3"
         cd ..
         ls
