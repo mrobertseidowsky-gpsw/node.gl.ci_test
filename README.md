@@ -1,8 +1,13 @@
 node.gl
 =======
 
-![GitHub Actions status | mrobertseidowsky-gpsw/node.gl.ci](https://github.com/mrobertseidowsky-gpsw/node.gl.ci/workflows/ci.yml/badge.svg)
+![GitHub Actions status1 | mrobertseidowsky-gpsw/node.gl.ci](https://github.com/mrobertseidowsky-gpsw/node.gl.ci/workflows/ci.yml/badge.svg)
  
+
+![GitHub Actions status2 | mrobertseidowsky-gpsw/node.gl.ci](https://github.com/mrobertseidowsky-gpsw/node.gl.ci/workflows/.github/workflows/ci.yml/badge.svg)
+
+![GitHub Actions status3 | mrobertseidowsky-gpsw/node.gl.ci](https://github.com/mrobertseidowsky-gpsw/node.gl.ci/workflows/.github/workflows/ci.yml/badge.svg)
+![GitHub Actions status4 | mrobertseidowsky-gpsw/node.gl.ci](https://github.com/mrobertseidowsky-gpsw/node.gl.ci/workflows/.github/workflows/ci.yml/badge.svg?mrobertseidowsky-gpsw-hi)
 
 
 `node.gl` is a [GoPro][gopro] OpenGL engine for building and rendering
